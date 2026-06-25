@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,60 +7,47 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --bg1: #0B0F19; --bg2: #111827; --accent: #6366F1; }
-        [data-theme="midnight"] { --bg1: #020617; --bg2: #0F172A; --accent: #3B82F6; }
-        [data-theme="emerald"] { --bg1: #022C22; --bg2: #064E3B; --accent: #10B981; }
-        body { font-family: 'Inter', sans-serif; background-color: var(--bg1); color: #E5E7EB; }
-        .bg-primary { background-color: var(--bg1); } .bg-secondary { background-color: var(--bg2); }
-        .text-accent { color: var(--accent); } .bg-accent { background-color: var(--accent); } .border-accent { border-color: var(--accent); }
-        ::-webkit-scrollbar { width: 6px; height: 6px; } ::-webkit-scrollbar-track { background: var(--bg1); } ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+        body { font-family: 'Inter', sans-serif; background-color: #0B0F19; color: #E5E7EB; }
+        .bg-primary { background-color: #0B0F19; } .bg-secondary { background-color: #111827; }
+        .text-accent { color: #6366F1; } .bg-accent { background-color: #6366F1; } .border-accent { border-color: #6366F1; }
+        ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-track { background: #0B0F19; } ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
         .fade-in { animation: fadeIn 0.4s ease; } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .slide-up { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1); } @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-        .spinner { border: 3px solid rgba(255,255,255,0.1); border-top-color: var(--accent); border-radius: 50%; width: 20px; height: 20px; animation: spin 0.8s linear infinite; display: inline-block; } @keyframes spin { to { transform: rotate(360deg); } }
-        .agent-active { animation: pulseAgent 1.5s infinite; } @keyframes pulseAgent { 0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(234, 179, 8, 0); } 100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); } }
+        .spinner { border: 3px solid rgba(255,255,255,0.1); border-top-color: #6366F1; border-radius: 50%; width: 20px; height: 20px; animation: spin 0.8s linear infinite; display: inline-block; } @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body class="h-screen overflow-hidden flex flex-col">
 
-    <!-- LOGIN SCREEN -->
+    <!-- LOGIN -->
     <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-primary bg-opacity-95 backdrop-blur-sm">
-        <div class="w-full max-w-md p-8 bg-secondary rounded-2xl shadow-2xl border border-gray-800 slide-up">
+        <div class="w-full max-w-md p-8 bg-secondary rounded-2xl shadow-2xl border border-gray-800">
             <div class="text-center mb-8">
-                <div class="w-20 h-20 mx-auto mb-4"><svg viewBox="0 0 100 100" class="w-full h-full"><circle cx="50" cy="50" r="45" fill="none" stroke="var(--accent)" stroke-width="2" opacity="0.3"/><path d="M 30 30 L 50 70 L 70 30" fill="none" stroke="var(--accent)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="50" cy="70" r="4" fill="var(--accent)"/></svg></div>
-                <h1 class="text-3xl font-bold text-white tracking-tight">Visionary-SA</h1>
-                <p class="text-gray-400 mt-2 text-sm" data-i18n="subtitle">Agentic Research Assistant for Vision 2030</p>
+                <div class="w-20 h-20 mx-auto mb-4 bg-accent rounded-2xl flex items-center justify-center text-white text-3xl font-bold">V</div>
+                <h1 class="text-3xl font-bold text-white">Visionary-SA</h1>
+                <p class="text-gray-400 mt-2">Agentic Research Assistant for Vision 2030</p>
             </div>
             <div class="space-y-4">
-                <input type="text" id="loginName" data-i18n-placeholder="loginName" placeholder="Enter your name" class="w-full bg-primary border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent transition">
-                <input type="password" id="loginPin" data-i18n-placeholder="loginPin" placeholder="Enter 4-digit PIN" maxlength="4" class="w-full bg-primary border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent transition">
-                <button onclick="handleLogin()" class="w-full bg-accent hover:opacity-90 text-white font-bold py-3 rounded-lg transition shadow-lg shadow-accent/20" data-i18n="enter">Enter Dashboard</button>
+                <input type="text" id="loginName" placeholder="Enter your name" class="w-full bg-primary border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent">
+                <input type="password" id="loginPin" placeholder="Enter 4-digit PIN" maxlength="4" class="w-full bg-primary border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent">
+                <button onclick="handleLogin()" class="w-full bg-accent hover:opacity-90 text-white font-bold py-3 rounded-lg transition">Enter Dashboard</button>
             </div>
             <p id="loginError" class="text-rose-400 text-sm text-center mt-4 hidden"></p>
-            <p class="text-gray-600 text-xs text-center mt-6" data-i18n="firstTime">First time? Just enter a name and create a 4-digit PIN.</p>
         </div>
     </div>
 
-    <!-- SETTINGS MODAL -->
+    <!-- SETTINGS -->
     <div id="settingsModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-black bg-opacity-60 backdrop-blur-sm">
-        <div class="w-full max-w-sm p-6 bg-secondary rounded-2xl shadow-2xl border border-gray-800 slide-up">
+        <div class="w-full max-w-sm p-6 bg-secondary rounded-2xl shadow-2xl border border-gray-800">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold text-white" data-i18n="settings">Settings</h2>
-                <button onclick="toggleSettings()" class="text-gray-400 hover:text-white text-2xl transition">✕</button>
+                <h2 class="text-xl font-bold text-white">Settings</h2>
+                <button onclick="toggleSettings()" class="text-gray-400 hover:text-white text-2xl">✕</button>
             </div>
             <div class="space-y-6">
                 <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-3" data-i18n="theme">Theme</label>
-                    <div class="grid grid-cols-3 gap-3">
-                        <button onclick="setTheme('default')" class="p-3 rounded-lg border-2 border-gray-700 hover:border-accent bg-[#0B0F19] text-xs text-center transition">Obsidian</button>
-                        <button onclick="setTheme('midnight')" class="p-3 rounded-lg border-2 border-gray-700 hover:border-accent bg-[#020617] text-xs text-center transition">Midnight</button>
-                        <button onclick="setTheme('emerald')" class="p-3 rounded-lg border-2 border-gray-700 hover:border-accent bg-[#022C22] text-xs text-center transition">Emerald</button>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-400 mb-2" data-i18n="apiKey">Gemini API Key</label>
-                    <input type="password" id="settingsApiKey" value="AQ.Ab8RN6KD1Y38y7dAVavKzG1UiIYT6L88uMai4idc8AmwAhyi1A" placeholder="Paste API Key" class="w-full bg-primary border border-gray-700 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-accent transition">
-                    <button onclick="updateApiKey()" class="w-full mt-3 bg-accent text-white text-sm font-medium py-2 rounded-lg hover:opacity-90 transition" data-i18n="saveKey">Save Key</button>
-                    <a href="https://aistudio.google.com/app/apikey" target="_blank" class="block w-full mt-3 bg-rose-900/30 border border-rose-500/50 text-rose-300 text-xs font-medium py-2 rounded-lg hover:bg-rose-900/50 transition text-center">🆘 <span data-i18n="getNewKey">Get New API Key (If Quota Exceeded)</span></a>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Gemini API Key</label>
+                    <p class="text-xs text-rose-400 mb-2">⚠️ MUST start with "AIza" (Get from aistudio.google.com)</p>
+                    <input type="password" id="settingsApiKey" placeholder="Paste your AIza... key here" class="w-full bg-primary border border-gray-700 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-accent">
+                    <button onclick="updateApiKey()" class="w-full mt-3 bg-accent text-white text-sm font-medium py-2 rounded-lg hover:opacity-90">Save Key</button>
+                    <a href="https://aistudio.google.com/app/apikey" target="_blank" class="block w-full mt-3 bg-rose-900/30 border border-rose-500/50 text-rose-300 text-xs font-medium py-2 rounded-lg text-center hover:bg-rose-900/50">🆘 Get Free AIza API Key from Google</a>
                 </div>
             </div>
         </div>
@@ -68,32 +55,28 @@
 
     <!-- MAIN APP -->
     <div id="mainApp" class="flex-1 flex flex-col h-screen hidden">
-        <header class="bg-secondary border-b border-gray-800 p-4 flex justify-between items-center z-10">
+        <header class="bg-secondary border-b border-gray-800 p-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-accent rounded-lg flex items-center justify-center font-bold text-white text-xl shadow-lg shadow-accent/20">V</div>
-                <div><h1 class="text-xl font-bold text-white">Visionary-SA</h1><p class="text-xs text-gray-400"><span data-i18n="welcome">Welcome,</span> <span id="userDisplay" class="text-accent font-medium"></span></p></div>
+                <div class="w-10 h-10 bg-accent rounded-lg flex items-center justify-center font-bold text-white text-xl">V</div>
+                <div><h1 class="text-xl font-bold text-white">Visionary-SA</h1><p class="text-xs text-gray-400">Welcome, <span id="userDisplay" class="text-accent font-medium"></span></p></div>
             </div>
             <div class="flex items-center gap-4">
-                <div class="flex bg-primary rounded-lg p-1 border border-gray-800">
-                    <button id="btn-en" onclick="setLanguage('en')" class="px-3 py-1 rounded bg-accent text-white text-xs font-bold">EN</button>
-                    <button id="btn-ar" onclick="setLanguage('ar')" class="px-3 py-1 rounded bg-primary text-gray-400 text-xs">AR</button>
-                </div>
                 <div class="flex items-center gap-2 bg-primary px-3 py-1.5 rounded-full border border-gray-800">
-                    <div id="apiDot" class="w-2.5 h-2.5 rounded-full bg-red-500 transition-colors duration-300"></div>
-                    <span class="text-xs text-gray-400 font-medium" data-i18n="apiStatus">API</span>
+                    <div id="apiDot" class="w-2.5 h-2.5 rounded-full bg-red-500"></div>
+                    <span class="text-xs text-gray-400 font-medium">API</span>
                 </div>
-                <button onclick="toggleSettings()" class="p-2 hover:bg-primary rounded-lg text-gray-400 hover:text-white transition" title="Settings"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg></button>
-                <button onclick="logout()" class="px-4 py-2 bg-primary hover:bg-gray-800 text-gray-300 text-sm rounded-lg border border-gray-700 transition" data-i18n="logout">Logout</button>
+                <button onclick="toggleSettings()" class="p-2 hover:bg-primary rounded-lg text-gray-400 hover:text-white">⚙️</button>
+                <button onclick="logout()" class="px-4 py-2 bg-primary hover:bg-gray-800 text-gray-300 text-sm rounded-lg border border-gray-700">Logout</button>
             </div>
         </header>
 
-        <div class="flex-1 flex overflow-hidden" id="mainLayout">
+        <div class="flex-1 flex overflow-hidden">
             <aside class="w-72 bg-secondary border-r border-gray-800 flex flex-col">
                 <div class="p-4 border-b border-gray-800">
-                    <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3" data-i18n="knowledgeBase">Knowledge Base</h2>
-                    <label class="block w-full bg-primary hover:bg-gray-800 border border-dashed border-gray-600 rounded-lg p-4 text-center cursor-pointer transition">
+                    <h2 class="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Knowledge Base</h2>
+                    <label class="block w-full bg-primary hover:bg-gray-800 border border-dashed border-gray-600 rounded-lg p-4 text-center cursor-pointer">
                         <svg class="w-8 h-8 mx-auto text-gray-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                        <span class="text-sm text-gray-400" data-i18n="upload">Upload PDFs</span>
+                        <span class="text-sm text-gray-400">Upload PDFs</span>
                         <input type="file" id="pdfUp" accept=".pdf" multiple class="hidden" onchange="loadPDFs(event)">
                     </label>
                 </div>
@@ -103,11 +86,11 @@
             <main class="flex-1 flex flex-col bg-primary overflow-hidden">
                 <div class="p-4 border-b border-gray-800 flex justify-between items-center">
                     <div class="flex gap-2">
-                        <button onclick="setV('pdf')" id="b-pdf" class="px-4 py-2 rounded-lg text-sm font-medium bg-accent text-white transition" data-i18n="viewer">Viewer</button>
-                        <button onclick="setV('map')" id="b-map" class="px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-400 hover:bg-gray-700 transition" data-i18n="mindMap">Mind Map</button>
-                        <button onclick="setV('deck')" id="b-deck" class="px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-400 hover:bg-gray-700 transition" data-i18n="deck">Deck</button>
+                        <button onclick="setV('pdf')" id="b-pdf" class="px-4 py-2 rounded-lg text-sm font-medium bg-accent text-white">Viewer</button>
+                        <button onclick="setV('map')" id="b-map" class="px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-400 hover:bg-gray-700">Mind Map</button>
+                        <button onclick="setV('deck')" id="b-deck" class="px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-400 hover:bg-gray-700">Deck</button>
                     </div>
-                    <div id="status" class="text-xs font-mono text-gray-500 flex items-center gap-2" data-i18n="idle">Idle</div>
+                    <div id="status" class="text-xs font-mono text-gray-500">Idle</div>
                 </div>
                 
                 <div id="v-pdf" class="flex-1 overflow-hidden relative bg-white">
@@ -117,28 +100,28 @@
                         <p class="text-lg font-medium">Upload a document to view</p>
                     </div>
                 </div>
-                <div id="v-map" class="flex-1 overflow-auto p-8 hidden"><div id="mapBox" class="max-w-5xl mx-auto bg-secondary border border-gray-800 rounded-xl p-8 min-h-[500px] flex items-center justify-center text-gray-500">Click "Mind Map" in chat to generate.</div></div>
-                <div id="v-deck" class="flex-1 overflow-auto p-8 hidden"><div id="deckBox" class="max-w-5xl mx-auto space-y-6"><p class="text-center text-gray-500">Click "Deck" in chat to generate.</p></div></div>
+                <div id="v-map" class="flex-1 overflow-auto p-8 hidden"><div id="mapBox" class="max-w-5xl mx-auto bg-secondary border border-gray-800 rounded-xl p-8 min-h-[500px] flex items-center justify-center text-gray-500">Click "Mind Map" to generate.</div></div>
+                <div id="v-deck" class="flex-1 overflow-auto p-8 hidden"><div id="deckBox" class="max-w-5xl mx-auto space-y-6"><p class="text-center text-gray-500">Click "Deck" to generate.</p></div></div>
             </main>
 
             <aside class="w-96 bg-secondary border-l border-gray-800 flex flex-col">
                 <div class="p-4 border-b border-gray-800">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3" data-i18n="agentConsole">Agentic Workflow Console</h3>
+                    <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Agentic Workflow</h3>
                     <div class="space-y-2">
-                        <div class="flex items-center gap-2 text-xs"><div id="status-r" class="w-2 h-2 rounded-full bg-gray-600 transition-colors"></div><span class="text-gray-400" data-i18n="agent1">Agent 1: Researcher</span><span id="text-r" class="ms-auto text-gray-600 font-mono" data-i18n="idle">Idle</span></div>
-                        <div class="flex items-center gap-2 text-xs"><div id="status-a" class="w-2 h-2 rounded-full bg-gray-600 transition-colors"></div><span class="text-gray-400" data-i18n="agent2">Agent 2: Analyzer</span><span id="text-a" class="ms-auto text-gray-600 font-mono" data-i18n="idle">Idle</span></div>
-                        <div class="flex items-center gap-2 text-xs"><div id="status-s" class="w-2 h-2 rounded-full bg-gray-600 transition-colors"></div><span class="text-gray-400" data-i18n="agent3">Agent 3: Synthesizer</span><span id="text-s" class="ms-auto text-gray-600 font-mono" data-i18n="idle">Idle</span></div>
+                        <div class="flex items-center gap-2 text-xs"><div id="status-r" class="w-2 h-2 rounded-full bg-gray-600"></div><span class="text-gray-400">Agent 1: Researcher</span><span id="text-r" class="ml-auto text-gray-600 font-mono">Idle</span></div>
+                        <div class="flex items-center gap-2 text-xs"><div id="status-a" class="w-2 h-2 rounded-full bg-gray-600"></div><span class="text-gray-400">Agent 2: Analyzer</span><span id="text-a" class="ml-auto text-gray-600 font-mono">Idle</span></div>
+                        <div class="flex items-center gap-2 text-xs"><div id="status-s" class="w-2 h-2 rounded-full bg-gray-600"></div><span class="text-gray-400">Agent 3: Synthesizer</span><span id="text-s" class="ml-auto text-gray-600 font-mono">Idle</span></div>
                     </div>
                 </div>
-                <div id="chat" class="flex-1 overflow-y-auto p-4 space-y-4"><div class="bg-primary p-4 rounded-lg border border-gray-800"><p class="text-sm text-gray-300">Welcome to Visionary-SA! Upload docs and ask me anything, or generate Mind Maps and Decks.</p></div></div>
+                <div id="chat" class="flex-1 overflow-y-auto p-4 space-y-4"><div class="bg-primary p-4 rounded-lg border border-gray-800"><p class="text-sm text-gray-300">Welcome! Upload docs and ask me anything.</p></div></div>
                 <div class="p-4 border-t border-gray-800 space-y-3">
                     <div class="flex gap-2">
-                        <button onclick="agent('map')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-emerald-400 text-xs font-semibold py-2 rounded-lg border border-gray-700 transition">🧠 <span data-i18n="mindMap">Mind Map</span></button>
-                        <button onclick="agent('deck')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-indigo-400 text-xs font-semibold py-2 rounded-lg border border-gray-700 transition">📊 <span data-i18n="deck">Deck</span></button>
+                        <button onclick="agent('map')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-emerald-400 text-xs font-semibold py-2 rounded-lg border border-gray-700">🧠 Mind Map</button>
+                        <button onclick="agent('deck')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-indigo-400 text-xs font-semibold py-2 rounded-lg border border-gray-700">📊 Deck</button>
                     </div>
                     <div class="flex gap-2">
-                        <input type="text" id="chatIn" data-i18n-placeholder="chatPlaceholder" placeholder="Ask anything..." class="flex-1 bg-primary border border-gray-700 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-accent transition" onkeypress="if(event.key==='Enter')send()">
-                        <button onclick="send()" class="bg-accent hover:opacity-90 text-white px-4 py-2 rounded-lg font-medium transition" data-i18n="send">Send</button>
+                        <input type="text" id="chatIn" placeholder="Ask anything..." class="flex-1 bg-primary border border-gray-700 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-accent" onkeypress="if(event.key==='Enter')send()">
+                        <button onclick="send()" class="bg-accent hover:opacity-90 text-white px-4 py-2 rounded-lg font-medium">Send</button>
                     </div>
                 </div>
             </aside>
@@ -146,172 +129,110 @@
     </div>
 
     <script>
-        const T = {
-            en: { subtitle: "Agentic Research Assistant for Vision 2030", loginName: "Enter your name", loginPin: "Enter 4-digit PIN", enter: "Enter Dashboard", firstTime: "First time? Just enter a name and create a 4-digit PIN.", settings: "Settings", theme: "Theme", apiKey: "Gemini API Key", saveKey: "Save Key", getNewKey: "Get New API Key (If Quota Exceeded)", welcome: "Welcome,", apiStatus: "API", logout: "Logout", knowledgeBase: "Knowledge Base", upload: "Upload PDFs", viewer: "Viewer", mindMap: "Mind Map", deck: "Deck", idle: "Idle", agentConsole: "Agentic Workflow Console", agent1: "Agent 1: Researcher", agent2: "Agent 2: Analyzer", agent3: "Agent 3: Synthesizer", chatPlaceholder: "Ask anything...", send: "Send", errQuota: "❌ API Quota Exceeded. Please click 'Get New API Key' in Settings to generate a fresh free key.", errKey: "❌ Invalid API Key. Please check Settings.", errJson: "❌ AI returned invalid data format. Please try again.", sysMap: "✅ Mind Map generated successfully.", sysDeck: "✅ Executive Deck generated successfully." },
-            ar: { subtitle: "مساعد البحث الذكي لرؤية 2030", loginName: "أدخل اسمك", loginPin: "أدخل رمز PIN (4 أرقام)", enter: "دخول لوحة التحكم", firstTime: "هل هذه المرة الأولى؟ فقط أدخل اسماً وأنشئ رمز PIN مكون من 4 أرقام.", settings: "الإعدادات", theme: "المظهر", apiKey: "مفتاح Gemini API", saveKey: "حفظ المفتاح", getNewKey: "الحصول على مفتاح API جديد (إذا انتهت الحصة المجانية)", welcome: "مرحباً،", apiStatus: "API", logout: "تسجيل الخروج", knowledgeBase: "قاعدة المعرفة", upload: "رفع ملفات PDF", viewer: "العارض", mindMap: "خريطة ذهنية", deck: "عرض تقديمي", idle: "خامل", agentConsole: "وحدة تحكم العمل الوكيلة", agent1: "الوكيل 1: الباحث", agent2: "الوكيل 2: المحلل", agent3: "الوكيل 3: المُلخِّص", chatPlaceholder: "اسأل أي شيء...", send: "إرسال", errQuota: "❌ انتهت حصة API المجانية. يرجى الذهاب إلى 'الإعدادات' والضغط على 'الحصول على مفتاح جديد'.", errKey: "❌ مفتاح API غير صالح.", errJson: "❌ عاد الذكاء الاصطناعي ببيانات غير صالحة.", sysMap: "✅ تم إنشاء الخريطة الذهنية بنجاح.", sysDeck: "✅ تم إنشاء العرض التقديمي بنجاح." }
-        };
-        let lang = localStorage.getItem('vs_lang') || 'en';
-        function t(key) { return T[lang][key] || key; }
-        function setLanguage(l) {
-            lang = l; localStorage.setItem('vs_lang', l);
-            document.documentElement.lang = l; document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
-            document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.getAttribute('data-i18n')));
-            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => el.placeholder = t(el.getAttribute('data-i18n-placeholder')));
-            document.getElementById('btn-en').className = l === 'en' ? 'px-3 py-1 rounded bg-accent text-white text-xs font-bold' : 'px-3 py-1 rounded bg-primary text-gray-400 text-xs';
-            document.getElementById('btn-ar').className = l === 'ar' ? 'px-3 py-1 rounded bg-accent text-white text-xs font-bold' : 'px-3 py-1 rounded bg-primary text-gray-400 text-xs';
-        }
-
         let API_KEY = localStorage.getItem('vs_api_key') || '';
         let docs = [], texts = {};
 
         window.onload = function() {
-            const presetKey = document.getElementById('settingsApiKey').value;
-            if (presetKey && !API_KEY) { API_KEY = presetKey; localStorage.setItem('vs_api_key', API_KEY); }
-            setLanguage(lang); updateApiDot(); setTheme(localStorage.getItem('vs_theme') || 'default');
+            updateApiDot();
             const savedName = localStorage.getItem('vs_name');
             if (savedName) { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('mainApp').classList.remove('hidden'); document.getElementById('userDisplay').innerText = savedName; }
         };
 
-        function updateApiDot() { const dot = document.getElementById('apiDot'); dot.className = API_KEY ? 'w-2.5 h-2.5 rounded-full bg-emerald-500 transition-colors duration-300 shadow-[0_0_8px_rgba(16,185,129,0.6)]' : 'w-2.5 h-2.5 rounded-full bg-red-500 transition-colors duration-300'; }
+        function updateApiDot() { const dot = document.getElementById('apiDot'); dot.className = API_KEY ? 'w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]' : 'w-2.5 h-2.5 rounded-full bg-red-500'; }
+
         function handleLogin() {
             const name = document.getElementById('loginName').value.trim(), pin = document.getElementById('loginPin').value.trim(), errEl = document.getElementById('loginError');
-            if (!name || !pin) return showErr(errEl, lang === 'ar' ? 'يرجى ملء جميع الحقول.' : 'Please fill all fields.');
-            if (pin.length !== 4 || isNaN(pin)) return showErr(errEl, lang === 'ar' ? 'يجب أن يكون الرمز 4 أرقام.' : 'PIN must be exactly 4 digits.');
-            const savedName = localStorage.getItem('vs_name'), savedPin = localStorage.getItem('vs_pin');
-            if (!savedName) { localStorage.setItem('vs_name', name); localStorage.setItem('vs_pin', pin); enterApp(name); }
-            else if (name === savedName && pin === savedPin) { enterApp(name); }
-            else { showErr(errEl, lang === 'ar' ? 'الاسم أو الرمز غير صحيح.' : 'Invalid name or PIN.'); }
+            if (!name || !pin) { errEl.innerText = 'Please fill all fields.'; errEl.classList.remove('hidden'); return; }
+            if (pin.length !== 4 || isNaN(pin)) { errEl.innerText = 'PIN must be 4 digits.'; errEl.classList.remove('hidden'); return; }
+            localStorage.setItem('vs_name', name); localStorage.setItem('vs_pin', pin);
+            document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('mainApp').classList.remove('hidden'); document.getElementById('userDisplay').innerText = name;
         }
-        function showErr(el, msg) { el.innerText = msg; el.classList.remove('hidden'); }
-        function enterApp(name) { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('mainApp').classList.remove('hidden'); document.getElementById('userDisplay').innerText = name; }
         function logout() { localStorage.removeItem('vs_name'); localStorage.removeItem('vs_pin'); location.reload(); }
         function toggleSettings() { document.getElementById('settingsModal').classList.toggle('hidden'); document.getElementById('settingsModal').classList.toggle('flex'); }
-        function setTheme(t) { document.documentElement.setAttribute('data-theme', t); localStorage.setItem('vs_theme', t); }
-        function updateApiKey() { const k = document.getElementById('settingsApiKey').value.trim(); if (k) { API_KEY = k; localStorage.setItem('vs_api_key', k); updateApiDot(); alert(lang === 'ar' ? 'تم حفظ المفتاح!' : 'API Key saved!'); toggleSettings(); } }
+        
+        function updateApiKey() {
+            const k = document.getElementById('settingsApiKey').value.trim();
+            if (!k) return;
+            if (!k.startsWith('AIza')) { alert('⚠️ INVALID KEY! Gemini API keys MUST start with "AIza". Please get a valid key from aistudio.google.com'); return; }
+            API_KEY = k; localStorage.setItem('vs_api_key', k); updateApiDot(); alert('✅ API Key saved!'); toggleSettings();
+        }
 
         async function loadPDFs(e) {
             for (let f of e.target.files) {
                 try {
                     const viewUrl = URL.createObjectURL(f);
-                    const buffer = await f.arrayBuffer();
-                    // Note: We are NOT using pdf.js here to avoid the detached buffer crash. We rely on the native iframe for viewing.
-                    // For AI text extraction, we use a simple fallback or skip if too large to prevent crashes.
-                    texts[f.name] = "Document loaded: " + f.name + ". (Use the chat to ask specific questions about the uploaded PDF context)."; 
+                    texts[f.name] = "Document: " + f.name + " loaded.";
                     docs.push({ name: f.name, url: viewUrl });
                     renderDocs();
                     document.getElementById('pdfFrame').src = viewUrl;
                     document.getElementById('pdfPlaceholder').style.display = 'none';
                     setV('pdf');
-                    addMsg('system', `✅ ${lang === 'ar' ? 'تم التحميل:' : 'Loaded:'} ${f.name}`);
-                } catch (err) { addMsg('error', `❌ ${lang === 'ar' ? 'فشل القراءة:' : 'Failed to read'} ${f.name}`); }
+                    addMsg('system', '✅ Loaded: ' + f.name);
+                } catch (err) { addMsg('error', '❌ Failed: ' + f.name); }
             }
             e.target.value = '';
         }
 
         function renderDocs() {
             const el = document.getElementById('docList');
-            if (!docs.length) { el.innerHTML = `<p class="text-xs text-gray-500 italic text-center mt-4">${lang === 'ar' ? 'لا توجد مستندات بعد.' : 'No documents yet.'}</p>`; return; }
-            el.innerHTML = docs.map((d, i) => `<div onclick="document.getElementById('pdfFrame').src = docs[${i}].url; setV('pdf');" class="p-3 bg-primary hover:bg-gray-800 rounded-lg cursor-pointer border border-gray-800 transition"><div class="flex items-center gap-2"><svg class="w-5 h-5 text-rose-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg><span class="text-sm text-gray-200 truncate">${d.name}</span></div></div>`).join('');
+            if (!docs.length) { el.innerHTML = '<p class="text-xs text-gray-500 italic text-center mt-4">No documents yet.</p>'; return; }
+            el.innerHTML = docs.map((d, i) => `<div onclick="document.getElementById('pdfFrame').src = docs[${i}].url; setV('pdf');" class="p-3 bg-primary hover:bg-gray-800 rounded-lg cursor-pointer border border-gray-800"><div class="flex items-center gap-2"><svg class="w-5 h-5 text-rose-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"/></svg><span class="text-sm text-gray-200 truncate">${d.name}</span></div></div>`).join('');
         }
 
-        function setV(v) {
-            ['pdf', 'map', 'deck'].forEach(x => { document.getElementById('v-' + x).classList.add('hidden'); document.getElementById('b-' + x).className = 'px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-400 hover:bg-gray-700 transition'; });
-            document.getElementById('v-' + v).classList.remove('hidden'); document.getElementById('b-' + v).className = 'px-4 py-2 rounded-lg text-sm font-medium bg-accent text-white transition';
-        }
+        function setV(v) { ['pdf', 'map', 'deck'].forEach(x => { document.getElementById('v-' + x).classList.add('hidden'); document.getElementById('b-' + x).className = 'px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-400 hover:bg-gray-700'; }); document.getElementById('v-' + v).classList.remove('hidden'); document.getElementById('b-' + v).className = 'px-4 py-2 rounded-lg text-sm font-medium bg-accent text-white'; }
 
-        function addMsg(role, txt) {
-            const c = document.getElementById('chat'), d = document.createElement('div');
-            let cls = 'bg-primary border-gray-800 mr-8';
-            if (role === 'user') cls = 'bg-accent bg-opacity-20 border-accent border-opacity-30 ml-8';
-            if (role === 'system') cls = 'bg-emerald-900 bg-opacity-20 border-emerald-500 border-opacity-30';
-            if (role === 'error') cls = 'bg-rose-900 bg-opacity-20 border-rose-500 border-opacity-30';
-            d.className = `p-4 rounded-lg border fade-in ${cls}`; d.innerHTML = `<div class="text-sm text-gray-300 whitespace-pre-wrap">${txt}</div>`;
-            c.appendChild(d); c.scrollTop = c.scrollHeight;
-        }
+        function addMsg(role, txt) { const c = document.getElementById('chat'), d = document.createElement('div'); let cls = 'bg-primary border-gray-800 mr-8'; if (role === 'user') cls = 'bg-accent bg-opacity-20 border-accent border-opacity-30 ml-8'; if (role === 'system') cls = 'bg-emerald-900 bg-opacity-20 border-emerald-500 border-opacity-30'; if (role === 'error') cls = 'bg-rose-900 bg-opacity-20 border-rose-500 border-opacity-30'; d.className = `p-4 rounded-lg border fade-in ${cls}`; d.innerHTML = `<div class="text-sm text-gray-300 whitespace-pre-wrap">${txt}</div>`; c.appendChild(d); c.scrollTop = c.scrollHeight; }
 
-        function setAgentStatus(a, s, txt) {
-            document.getElementById('text-' + a).innerText = txt;
-            if (s === 'active') { document.getElementById('status-' + a).className = 'w-2 h-2 rounded-full bg-yellow-500 transition-colors agent-active'; document.getElementById('text-' + a).className = 'ms-auto text-yellow-400 font-mono'; }
-            else if (s === 'done') { document.getElementById('status-' + a).className = 'w-2 h-2 rounded-full bg-emerald-500 transition-colors'; document.getElementById('text-' + a).className = 'ms-auto text-emerald-400 font-mono'; }
-            else { document.getElementById('status-' + a).className = 'w-2 h-2 rounded-full bg-gray-600 transition-colors'; document.getElementById('text-' + a).className = 'ms-auto text-gray-600 font-mono'; }
-        }
-        function resetAgents() { setAgentStatus('r', 'idle', t('idle')); setAgentStatus('a', 'idle', t('idle')); setAgentStatus('s', 'idle', t('idle')); }
-        function getCtx() { return Object.values(texts).join('\n\n').substring(0, 25000); }
+        function setAgentStatus(a, s, txt) { document.getElementById('text-' + a).innerText = txt; if (s === 'active') { document.getElementById('status-' + a).className = 'w-2 h-2 rounded-full bg-yellow-500'; document.getElementById('text-' + a).className = 'ml-auto text-yellow-400 font-mono'; } else if (s === 'done') { document.getElementById('status-' + a).className = 'w-2 h-2 rounded-full bg-emerald-500'; document.getElementById('text-' + a).className = 'ml-auto text-emerald-400 font-mono'; } else { document.getElementById('status-' + a).className = 'w-2 h-2 rounded-full bg-gray-600'; document.getElementById('text-' + a).className = 'ml-auto text-gray-600 font-mono'; } }
+        function resetAgents() { setAgentStatus('r', 'idle', 'Idle'); setAgentStatus('a', 'idle', 'Idle'); setAgentStatus('s', 'idle', 'Idle'); }
+        function getCtx() { return Object.values(texts).join('\n\n'); }
         function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
         async function send() {
             const m = document.getElementById('chatIn').value.trim();
-            if (!m) return; if (!API_KEY) return addMsg('error', t('errKey')); if (!Object.keys(texts).length) return addMsg('error', lang === 'ar' ? '❌ يرجى رفع مستند أولاً.' : ' Upload a document first.');
+            if (!m) return; if (!API_KEY) { addMsg('error', '❌ Please add your AIza API Key in Settings'); return; } if (!Object.keys(texts).length) { addMsg('error', '❌ Upload a document first.'); return; }
             addMsg('user', m); document.getElementById('chatIn').value = ''; resetAgents();
-            setAgentStatus('r', 'active', lang === 'ar' ? 'يستخرج السياق...' : 'Extracting context...'); await sleep(800); setAgentStatus('r', 'done', lang === 'ar' ? 'تم الاستخراج' : 'Extracted');
-            setAgentStatus('a', 'active', lang === 'ar' ? 'يحلل...' : 'Analyzing...'); await sleep(800); setAgentStatus('a', 'done', lang === 'ar' ? 'تم التحليل' : 'Analyzed');
-            setAgentStatus('s', 'active', lang === 'ar' ? 'يولد الإجابة...' : 'Synthesizing...');
-            try {
-                const prompt = `You are an elite research assistant for Saudi Vision 2030. Analyze the context and answer the question with citations.\n\nCONTEXT:\n${getCtx()}\n\nQUESTION:\n${m}`;
-                const answer = await callGemini(prompt, false); setAgentStatus('s', 'done', lang === 'ar' ? 'تم التوليد' : 'Generated'); addMsg('agent', answer);
-            } catch (e) { setAgentStatus('s', 'idle', 'Error'); addMsg('error', e.message); }
+            setAgentStatus('r', 'active', 'Extracting...'); await sleep(800); setAgentStatus('r', 'done', 'Done');
+            setAgentStatus('a', 'active', 'Analyzing...'); await sleep(800); setAgentStatus('a', 'done', 'Done');
+            setAgentStatus('s', 'active', 'Synthesizing...');
+            try { const answer = await callGemini(`You are an elite research assistant for Saudi Vision 2030. Analyze the context and answer the question with citations.\n\nCONTEXT:\n${getCtx()}\n\nQUESTION:\n${m}`, false); setAgentStatus('s', 'done', 'Done'); addMsg('agent', answer); } catch (e) { setAgentStatus('s', 'idle', 'Error'); addMsg('error', ' ' + e.message); }
         }
 
         async function agent(type) {
-            if (!API_KEY) return addMsg('error', t('errKey')); if (!Object.keys(texts).length) return addMsg('error', lang === 'ar' ? '❌ يرجى رفع مستند أولاً.' : ' Upload a document first.');
-            resetAgents(); setAgentStatus('r', 'active', lang === 'ar' ? 'يستخرج الكيانات...' : 'Extracting entities...'); await sleep(800); setAgentStatus('r', 'done', lang === 'ar' ? 'تم الاستخراج' : 'Extracted');
-            setAgentStatus('a', 'active', lang === 'ar' ? 'يهيكلة البيانات...' : 'Structuring data...'); await sleep(800); setAgentStatus('a', 'done', lang === 'ar' ? 'تمت الهيكلة' : 'Structured');
-            setAgentStatus('s', 'active', lang === 'ar' ? 'ي_render...' : 'Rendering...');
-            const ctx = getCtx(); let prompt = '';
-            if (type === 'map') {
-                setV('map'); document.getElementById('mapBox').innerHTML = `<div class="flex flex-col items-center"><div class="spinner mb-4 w-10 h-10"></div><p class="text-gray-400">${lang === 'ar' ? 'جاري إنشاء العقد...' : 'Generating nodes...'}</p></div>`;
-                prompt = `Extract core concepts from this text into a mind map. You MUST return ONLY a valid JSON object with this exact structure: {"centralNode":"Main Topic","branches":[{"name":"Branch Name","leaves":["Leaf 1","Leaf 2"]}]}.\n\n${ctx}`;
-            } else {
-                setV('deck'); document.getElementById('deckBox').innerHTML = `<div class="flex flex-col items-center"><div class="spinner mb-4 w-10 h-10"></div><p class="text-gray-400">${lang === 'ar' ? 'جاري هيكلة الشرائح...' : 'Structuring slides...'}</p></div>`;
-                prompt = `Create a 4-slide executive brief from this text. You MUST return ONLY a valid JSON array with this exact structure: [{"title":"Slide Title","bullets":["Point 1","Point 2"]}]. Do not include any markdown formatting or explanations. Just the raw JSON array.\n\n${ctx}`;
-            }
+            if (!API_KEY) { addMsg('error', '❌ Please add your AIza API Key in Settings'); return; } if (!Object.keys(texts).length) { addMsg('error', '❌ Upload a document first.'); return; }
+            resetAgents(); setAgentStatus('r', 'active', 'Extracting...'); await sleep(800); setAgentStatus('r', 'done', 'Done');
+            setAgentStatus('a', 'active', 'Structuring...'); await sleep(800); setAgentStatus('a', 'done', 'Done');
+            setAgentStatus('s', 'active', 'Rendering...');
+            let prompt = '';
+            if (type === 'map') { setV('map'); document.getElementById('mapBox').innerHTML = '<div class="flex flex-col items-center"><div class="spinner mb-4 w-10 h-10"></div><p class="text-gray-400">Generating...</p></div>'; prompt = `Extract core concepts into a mind map. Return ONLY valid JSON: {"centralNode":"Main Topic","branches":[{"name":"Branch","leaves":["Leaf1","Leaf2"]}]}.\n\n${getCtx()}`; } 
+            else { setV('deck'); document.getElementById('deckBox').innerHTML = '<div class="flex flex-col items-center"><div class="spinner mb-4 w-10 h-10"></div><p class="text-gray-400">Structuring...</p></div>'; prompt = `Create 4-slide executive brief. Return ONLY valid JSON: [{"title":"Title","bullets":["Point1","Point2"]}].\n\n${getCtx()}`; }
             try {
                 const text = await callGemini(prompt, true);
                 let clean = text.replace(/```json/gi, '').replace(/```/g, '').trim();
                 let start = type === 'map' ? clean.indexOf('{') : clean.indexOf('[');
                 let end = type === 'map' ? clean.lastIndexOf('}') : clean.lastIndexOf(']');
-                if (start !== -1 && end !== -1 && end > start) {
-                    const data = JSON.parse(clean.substring(start, end + 1));
-                    if (type === 'map') { renderMap(data); addMsg('system', t('sysMap')); } else { renderDeck(data); addMsg('system', t('sysDeck')); }
-                    setAgentStatus('s', 'done', lang === 'ar' ? 'تم بنجاح' : 'Success');
-                } else { throw new Error('JSON_PARSE_FAIL'); }
-            } catch (e) { setAgentStatus('s', 'idle', 'Error'); addMsg('error', e.message === 'JSON_PARSE_FAIL' ? t('errJson') : e.message); }
+                if (start !== -1 && end !== -1) { const data = JSON.parse(clean.substring(start, end + 1)); if (type === 'map') renderMap(data); else renderDeck(data); setAgentStatus('s', 'done', 'Done'); addMsg('system', '✅ Generated successfully.'); } else { throw new Error('Invalid format'); }
+            } catch (e) { setAgentStatus('s', 'idle', 'Error'); addMsg('error', '❌ ' + e.message); }
         }
 
         async function callGemini(prompt, isJson) {
-            // CRITICAL FIX: Using the correct, currently active model names that won't return 404.
-            const models = ['gemini-1.5-flash-latest', 'gemini-2.0-flash', 'gemini-1.5-flash'];
+            const models = ['gemini-2.0-flash', 'gemini-1.5-flash'];
             for (const model of models) {
                 try {
                     const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_KEY}`;
-                    const payload = { contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: isJson ? "application/json" : "text/plain" } };
+                    const payload = { contents: [{ parts: [{ text: prompt }] }] };
+                    if (isJson) payload.generationConfig = { responseMimeType: "application/json" };
                     const res = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
                     const data = await res.json();
-                    if (data.error) {
-                        const msg = data.error.message.toLowerCase();
-                        if (msg.includes('quota') || msg.includes('limit: 0') || msg.includes('resource exhausted')) throw new Error('QUOTA_EXCEEDED');
-                        if (msg.includes('api key') || msg.includes('invalid')) throw new Error('INVALID_KEY');
-                        if (msg.includes('not found') || msg.includes('unsupported')) continue; // Try next model
-                        throw new Error(data.error.message);
-                    }
+                    if (data.error) { const msg = data.error.message.toLowerCase(); if (msg.includes('quota')) throw new Error('API Quota Exceeded. Get a new key.'); if (msg.includes('api key') || msg.includes('invalid')) throw new Error('Invalid API Key. Must start with AIza.'); if (msg.includes('not found')) continue; throw new Error(data.error.message); }
                     return data.candidates[0].content.parts[0].text;
-                } catch (e) {
-                    if (e.message === 'QUOTA_EXCEEDED') throw new Error(t('errQuota'));
-                    if (e.message === 'INVALID_KEY') throw new Error(t('errKey'));
-                    continue;
-                }
+                } catch (e) { if (e.message.includes('Quota') || e.message.includes('Invalid')) throw e; continue; }
             }
-            throw new Error(t('errQuota'));
+            throw new Error('All models failed.');
         }
 
-        function renderMap(d) {
-            const c = document.getElementById('mapBox'); if(!d.centralNode) return c.innerHTML = `<p class="text-rose-400">${t('errJson')}</p>`;
-            c.innerHTML = `<div class="flex flex-col items-center w-full fade-in"><div class="bg-accent text-white px-8 py-4 rounded-full font-bold text-xl shadow-lg mb-12 shadow-accent/20">${d.centralNode}</div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">${d.branches.map(b => `<div class="bg-primary border border-gray-800 rounded-xl p-6 hover:border-accent transition"><h3 class="text-emerald-400 font-bold text-lg mb-4 flex items-center gap-2"><span class="w-2 h-2 bg-emerald-400 rounded-full"></span> ${b.name}</h3><ul class="space-y-2">${b.leaves.map(l => `<li class="text-sm text-gray-400 ps-4 border-s-2 border-gray-800">${l}</li>`).join('')}</ul></div>`).join('')}</div></div>`;
-        }
-        function renderDeck(d) {
-            const c = document.getElementById('deckBox'); if(!Array.isArray(d)) return c.innerHTML = `<p class="text-rose-400">${t('errJson')}</p>`;
-            c.innerHTML = d.map((s, i) => `<div class="bg-secondary border border-gray-800 rounded-xl p-8 shadow-lg fade-in"><div class="flex items-center gap-4 mb-6"><span class="text-5xl font-black text-accent opacity-30">0${i + 1}</span><h2 class="text-2xl font-bold text-white">${s.title}</h2></div><ul class="space-y-3">${s.bullets.map(b => `<li class="flex items-start gap-3 text-gray-300"><span class="text-emerald-400 mt-1">▹</span> ${b}</li>`).join('')}</ul></div>`).join('');
-        }
+        function renderMap(d) { const c = document.getElementById('mapBox'); if(!d.centralNode) return c.innerHTML = '<p class="text-rose-400">Invalid data.</p>'; c.innerHTML = `<div class="flex flex-col items-center w-full fade-in"><div class="bg-accent text-white px-8 py-4 rounded-full font-bold text-xl shadow-lg mb-12">${d.centralNode}</div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">${d.branches.map(b => `<div class="bg-primary border border-gray-800 rounded-xl p-6"><h3 class="text-emerald-400 font-bold text-lg mb-4">${b.name}</h3><ul class="space-y-2">${b.leaves.map(l => `<li class="text-sm text-gray-400 pl-4 border-l-2 border-gray-800">${l}</li>`).join('')}</ul></div>`).join('')}</div></div>`; }
+        function renderDeck(d) { const c = document.getElementById('deckBox'); if(!Array.isArray(d)) return c.innerHTML = '<p class="text-rose-400">Invalid data.</p>'; c.innerHTML = d.map((s, i) => `<div class="bg-secondary border border-gray-800 rounded-xl p-8 shadow-lg fade-in"><div class="flex items-center gap-4 mb-6"><span class="text-5xl font-black text-accent opacity-30">0${i + 1}</span><h2 class="text-2xl font-bold text-white">${s.title}</h2></div><ul class="space-y-3">${s.bullets.map(b => `<li class="flex items-start gap-3 text-gray-300"><span class="text-emerald-400 mt-1">▹</span> ${b}</li>`).join('')}</ul></div>`).join(''); }
     </script>
 </body>
 </html>
