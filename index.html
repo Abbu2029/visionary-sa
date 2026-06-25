@@ -1,16 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visionary-SA | Agentic Research Assistant</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { background-color: #0B0F19; color: #E5E7EB; font-family: 'Inter', sans-serif; }
         .bg-primary { background-color: #0B0F19; } .bg-secondary { background-color: #111827; }
         .text-accent { color: #6366F1; } .bg-accent { background-color: #6366F1; } .border-accent { border-color: #6366F1; }
         ::-webkit-scrollbar { width: 6px; } ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
-        .fade-in { animation: fadeIn 0.5s ease; } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .fade-in { animation: fadeIn 0.4s ease; } @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .spinner { border: 3px solid rgba(255,255,255,0.1); border-top-color: #6366F1; border-radius: 50%; width: 24px; height: 24px; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         .pulse-dot { animation: pulse 1.5s infinite; } @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(234, 179, 8, 0); } 100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); } }
@@ -38,9 +40,14 @@
                 <h2 class="text-xl font-bold text-white">Settings</h2>
                 <button onclick="toggleSettings()" class="text-gray-400 hover:text-white text-2xl">✕</button>
             </div>
-            <label class="block text-sm font-medium text-gray-400 mb-2">Gemini API Key</label>
-            <input type="password" id="settingsApiKey" placeholder="Paste your key here" class="w-full bg-primary border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-accent">
-            <button onclick="updateApiKey()" class="w-full mt-3 bg-accent text-white py-2 rounded-lg hover:opacity-90 transition">Save Key</button>
+            <div class="space-y-6">
+                <div>
+                    <label class="block text-sm font-medium text-gray-400 mb-2">Gemini API Key</label>
+                    <p class="text-xs text-gray-500 mb-2">Accepts any key format (AIza, AQ, etc.)</p>
+                    <input type="password" id="settingsApiKey" placeholder="Paste your key here" class="w-full bg-primary border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-accent">
+                    <button onclick="updateApiKey()" class="w-full mt-3 bg-accent text-white py-2 rounded-lg hover:opacity-90 transition">Save Key</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -66,8 +73,8 @@
                 <div class="p-4 border-b border-gray-800">
                     <h2 class="text-sm font-semibold text-gray-400 uppercase mb-3">Knowledge Base</h2>
                     <label class="block w-full bg-primary hover:bg-gray-800 border border-dashed border-gray-600 rounded-lg p-4 text-center cursor-pointer transition">
-                        <span class="text-sm text-gray-400">Upload PDFs</span>
-                        <input type="file" id="pdfUp" accept=".pdf" multiple class="hidden" onchange="loadPDFs(event)">
+                        <span class="text-sm text-gray-400">Upload ANY PDF</span>
+                        <input type="file" id="pdfUp" accept=".pdf" class="hidden" onchange="handleFileUpload(event)">
                     </label>
                 </div>
                 <div id="docList" class="flex-1 overflow-y-auto p-4 space-y-2"><p class="text-xs text-gray-500 italic text-center mt-4">No documents.</p></div>
@@ -102,15 +109,15 @@
                         <div class="flex items-center gap-2 text-xs"><div id="status-s" class="w-2 h-2 rounded-full bg-gray-600"></div><span class="text-gray-400">Agent 3: Synthesizer</span><span id="text-s" class="ml-auto text-gray-600 font-mono">Idle</span></div>
                     </div>
                 </div>
-                <div id="chat" class="flex-1 overflow-y-auto p-4 space-y-4"><div class="bg-primary p-4 rounded-lg border border-gray-800"><p class="text-sm text-gray-300">Welcome! Upload docs and ask me anything.</p></div></div>
+                <div id="chat" class="flex-1 overflow-y-auto p-4 space-y-4"><div class="bg-primary p-4 rounded-lg border border-gray-800"><p class="text-sm text-gray-300">Welcome! Upload ANY PDF and ask me anything.</p></div></div>
                 <div class="p-4 border-t border-gray-800 space-y-3">
                     <div class="flex gap-2">
-                        <button onclick="agent('map')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-emerald-400 text-xs font-semibold py-2 rounded-lg border border-gray-700 transition"> Mind Map</button>
-                        <button onclick="agent('deck')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-indigo-400 text-xs font-semibold py-2 rounded-lg border border-gray-700 transition"> Deck</button>
+                        <button onclick="generateAgent('map')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-emerald-400 text-xs font-semibold py-2 rounded-lg border border-gray-700 transition">🧠 Mind Map</button>
+                        <button onclick="generateAgent('deck')" class="flex-1 bg-gray-800 hover:bg-gray-700 text-indigo-400 text-xs font-semibold py-2 rounded-lg border border-gray-700 transition">📊 Deck</button>
                     </div>
                     <div class="flex gap-2">
-                        <input type="text" id="chatIn" placeholder="Ask anything..." class="flex-1 bg-primary border border-gray-700 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-accent" onkeypress="if(event.key==='Enter')send()">
-                        <button onclick="send()" class="bg-accent text-white px-4 py-2 rounded-lg font-medium hover:opacity-90 transition">Send</button>
+                        <input type="text" id="chatIn" placeholder="Ask anything..." class="flex-1 bg-primary border border-gray-700 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-accent" onkeypress="if(event.key==='Enter')sendChat()">
+                        <button onclick="sendChat()" class="bg-accent text-white px-4 py-2 rounded-lg font-medium hover:opacity-90 transition">Send</button>
                     </div>
                 </div>
             </aside>
@@ -118,8 +125,11 @@
     </div>
 
     <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        
         let API_KEY = localStorage.getItem('vs_api_key') || '';
-        let docs = [], texts = {};
+        let currentDocText = '';
+        let currentDocName = '';
 
         window.onload = function() {
             updateApiDot();
@@ -127,7 +137,10 @@
             if (savedName) { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('mainApp').classList.remove('hidden'); document.getElementById('userDisplay').innerText = savedName; }
         };
 
-        function updateApiDot() { document.getElementById('apiDot').className = API_KEY ? 'w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]' : 'w-2.5 h-2.5 rounded-full bg-red-500'; }
+        function updateApiDot() { 
+            // ACCEPTS ANY KEY FORMAT - NO VALIDATION CHECKS
+            document.getElementById('apiDot').className = API_KEY ? 'w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]' : 'w-2.5 h-2.5 rounded-full bg-red-500'; 
+        }
         
         function handleLogin() {
             const name = document.getElementById('loginName').value.trim(), pin = document.getElementById('loginPin').value.trim(), errEl = document.getElementById('loginError');
@@ -141,30 +154,43 @@
         function updateApiKey() {
             const k = document.getElementById('settingsApiKey').value.trim();
             if (!k) return;
-            // ACCEPTS ANY KEY FORMAT
-            API_KEY = k; localStorage.setItem('vs_api_key', k); updateApiDot(); alert('✅ Key saved successfully!'); toggleSettings();
+            // NO FORMAT CHECK - ACCEPTS AQ, AIza, OR ANYTHING ELSE
+            API_KEY = k; localStorage.setItem('vs_api_key', k); updateApiDot(); 
+            alert('✅ Key saved successfully!'); 
+            toggleSettings();
         }
 
-        async function loadPDFs(e) {
-            for (let f of e.target.files) {
-                try {
-                    const viewUrl = URL.createObjectURL(f);
-                    texts[f.name] = "Document: " + f.name + " loaded successfully.";
-                    docs.push({ name: f.name, url: viewUrl });
-                    renderDocs();
-                    document.getElementById('pdfFrame').src = viewUrl;
-                    document.getElementById('pdfPlaceholder').style.display = 'none';
-                    setV('pdf');
-                    addMsg('system', '✅ Loaded: ' + f.name);
-                } catch (err) { addMsg('error', '❌ Failed: ' + f.name); }
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            addMsg('system', '✅ Loaded: ' + file.name + ' (Reading text...)');
+            
+            // 1. View in iframe
+            const viewUrl = URL.createObjectURL(file);
+            document.getElementById('pdfFrame').src = viewUrl;
+            document.getElementById('pdfPlaceholder').style.display = 'none';
+            setV('pdf');
+            
+            // 2. Extract text for AI
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let extractedText = "";
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    extractedText += textContent.items.map(item => item.str).join(' ') + '\n';
+                }
+                currentDocText = extractedText;
+                currentDocName = file.name;
+                
+                document.getElementById('docList').innerHTML = `<div class="p-3 bg-primary rounded-lg border border-gray-800"><span class="text-sm text-gray-200 truncate">${file.name}</span><p class="text-xs text-gray-500 mt-1">${pdf.numPages} pages</p></div>`;
+                addMsg('system', '✅ ' + file.name + ' (' + pdf.numPages + ' pages) - Ready for AI analysis.');
+            } catch (err) { 
+                addMsg('error', '❌ Failed to read PDF: ' + err.message); 
             }
-            e.target.value = '';
-        }
-
-        function renderDocs() {
-            const el = document.getElementById('docList');
-            if (!docs.length) { el.innerHTML = '<p class="text-xs text-gray-500 italic text-center mt-4">No documents.</p>'; return; }
-            el.innerHTML = docs.map((d, i) => `<div onclick="document.getElementById('pdfFrame').src = docs[${i}].url; setV('pdf');" class="p-3 bg-primary hover:bg-gray-800 rounded-lg cursor-pointer border border-gray-800 transition"><div class="flex items-center gap-2"><span class="text-sm text-gray-200 truncate">${d.name}</span></div></div>`).join('');
+            event.target.value = '';
         }
 
         function setV(v) { ['pdf', 'map', 'deck'].forEach(x => { document.getElementById('v-' + x).classList.add('hidden'); document.getElementById('b-' + x).className = 'px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-400 hover:bg-gray-700 transition'; }); document.getElementById('v-' + v).classList.remove('hidden'); document.getElementById('b-' + v).className = 'px-4 py-2 rounded-lg text-sm font-medium bg-accent text-white transition'; }
@@ -172,75 +198,65 @@
 
         function setAgentStatus(a, s, txt) { document.getElementById('text-' + a).innerText = txt; if (s === 'active') { document.getElementById('status-' + a).className = 'w-2 h-2 rounded-full bg-yellow-500 pulse-dot'; document.getElementById('text-' + a).className = 'ml-auto text-yellow-400 font-mono'; } else if (s === 'done') { document.getElementById('status-' + a).className = 'w-2 h-2 rounded-full bg-emerald-500'; document.getElementById('text-' + a).className = 'ml-auto text-emerald-400 font-mono'; } else { document.getElementById('status-' + a).className = 'w-2 h-2 rounded-full bg-gray-600'; document.getElementById('text-' + a).className = 'ml-auto text-gray-600 font-mono'; } }
         function resetAgents() { setAgentStatus('r', 'idle', 'Idle'); setAgentStatus('a', 'idle', 'Idle'); setAgentStatus('s', 'idle', 'Idle'); }
-        function getCtx() { return Object.values(texts).join('\n\n'); }
         function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-        async function send() {
+        // --- CHATBOT FUNCTIONALITY ---
+        async function sendChat() {
             const m = document.getElementById('chatIn').value.trim();
-            if (!m) return; if (!API_KEY) { addMsg('error', 'Please add API Key in Settings'); return; } if (!Object.keys(texts).length) { addMsg('error', 'Upload PDF first.'); return; }
+            if (!m) return; if (!API_KEY) { addMsg('error', 'Please add API Key in Settings'); return; } if (!currentDocText) { addMsg('error', 'Upload PDF first.'); return; }
             addMsg('user', m); document.getElementById('chatIn').value = ''; resetAgents();
-            setAgentStatus('r', 'active', 'Extracting...'); await sleep(800); setAgentStatus('r', 'done', 'Done');
-            setAgentStatus('a', 'active', 'Analyzing...'); await sleep(800); setAgentStatus('a', 'done', 'Done');
-            setAgentStatus('s', 'active', 'Synthesizing...');
+            setAgentStatus('r', 'active', 'Reading document...'); await sleep(800); setAgentStatus('r', 'done', 'Done');
+            setAgentStatus('a', 'active', 'Analyzing context...'); await sleep(800); setAgentStatus('a', 'done', 'Done');
+            setAgentStatus('s', 'active', 'Generating response...');
             try { 
-                const answer = await callGemini(`You are an elite research assistant for Saudi Vision 2030. Analyze the context and answer the question with citations.\n\nCONTEXT:\n${getCtx()}\n\nQUESTION:\n${m}`, false); 
+                const answer = await callGemini(`You are an elite research assistant. Based EXACTLY on the following document context, answer the user's question. If the answer isn't in the text, say so.\n\nDOCUMENT CONTEXT:\n${currentDocText.substring(0, 20000)}\n\nUSER QUESTION:\n${m}`, false); 
                 setAgentStatus('s', 'done', 'Done'); addMsg('agent', answer); 
             } catch (e) { 
-                // SMART FALLBACK: If API fails, show a polite fallback message instead of an error
-                setAgentStatus('s', 'done', 'Done'); 
-                addMsg('agent', "I am currently analyzing the uploaded document context to provide a detailed response. Please check the Mind Map and Deck tabs for the generated insights based on the Qiddiya ESG report."); 
+                setAgentStatus('s', 'done', 'Done'); addMsg('error', '❌ AI Error: ' + e.message); 
             }
         }
 
-        async function agent(type) {
-            if (!API_KEY) { addMsg('error', 'Please add API Key in Settings'); return; } if (!Object.keys(texts).length) { addMsg('error', 'Upload PDF first.'); return; }
-            resetAgents(); setAgentStatus('r', 'active', 'Extracting...'); await sleep(800); setAgentStatus('r', 'done', 'Done');
-            setAgentStatus('a', 'active', 'Structuring...'); await sleep(800); setAgentStatus('a', 'done', 'Done');
-            setAgentStatus('s', 'active', 'Rendering...');
+        // --- DECK & MIND MAP FUNCTIONALITY ---
+        async function generateAgent(type) {
+            if (!API_KEY) { addMsg('error', 'Please add API Key in Settings'); return; } if (!currentDocText) { addMsg('error', 'Upload PDF first.'); return; }
+            resetAgents(); setAgentStatus('r', 'active', 'Extracting concepts...'); await sleep(800); setAgentStatus('r', 'done', 'Done');
+            setAgentStatus('a', 'active', 'Structuring data...'); await sleep(800); setAgentStatus('a', 'done', 'Done');
+            setAgentStatus('s', 'active', 'Rendering output...');
             
             let prompt = '';
-            if (type === 'map') { setV('map'); document.getElementById('mapBox').innerHTML = '<div class="flex flex-col items-center"><div class="spinner mb-4"></div><p class="text-gray-400">Generating...</p></div>'; prompt = `Extract core concepts into a mind map. Return ONLY valid JSON: {"centralNode":"Main Topic","branches":[{"name":"Branch","leaves":["Leaf1","Leaf2"]}]}.\n\n${getCtx()}`; } 
-            else { setV('deck'); document.getElementById('deckBox').innerHTML = '<div class="flex flex-col items-center"><div class="spinner mb-4"></div><p class="text-gray-400">Structuring...</p></div>'; prompt = `Create 4-slide executive brief. Return ONLY valid JSON: [{"title":"Title","bullets":["Point1","Point2"]}].\n\n${getCtx()}`; }
+            if (type === 'map') { 
+                setV('map'); document.getElementById('mapBox').innerHTML = '<div class="flex flex-col items-center"><div class="spinner mb-4"></div><p class="text-gray-400">Generating Mind Map...</p></div>'; 
+                prompt = `Extract the core concepts from this document into a mind map structure. Return ONLY valid JSON: {"centralNode":"Main Topic","branches":[{"name":"Branch Name","leaves":["Leaf1","Leaf2","Leaf3"]}]}.\n\nDOCUMENT:\n${currentDocText.substring(0, 15000)}`; 
+            } else { 
+                setV('deck'); document.getElementById('deckBox').innerHTML = '<div class="flex flex-col items-center"><div class="spinner mb-4"></div><p class="text-gray-400">Creating Presentation...</p></div>'; 
+                prompt = `Create a 5-slide executive presentation summarizing this document. Return ONLY valid JSON: [{"title":"Slide Title","bullets":["Point 1","Point 2","Point 3"]}].\n\nDOCUMENT:\n${currentDocText.substring(0, 15000)}`; 
+            }
             
             try {
                 const text = await callGemini(prompt, true);
                 let clean = text.replace(/```json/gi, '').replace(/```/g, '').trim();
                 let start = type === 'map' ? clean.indexOf('{') : clean.indexOf('[');
                 let end = type === 'map' ? clean.lastIndexOf('}') : clean.lastIndexOf(']');
-                if (start !== -1 && end !== -1) { const data = JSON.parse(clean.substring(start, end + 1)); if (type === 'map') renderMap(data); else renderDeck(data); setAgentStatus('s', 'done', 'Done'); addMsg('system', '✅ Generated successfully.'); } else { throw new Error('Invalid format'); }
+                if (start !== -1 && end !== -1) { 
+                    const data = JSON.parse(clean.substring(start, end + 1)); 
+                    if (type === 'map') renderMap(data); else renderDeck(data); 
+                    setAgentStatus('s', 'done', 'Done'); addMsg('system', '✅ Generated successfully from document.'); 
+                } else { throw new Error('Invalid format'); }
             } catch (e) { 
-                // SMART FALLBACK: If API fails, render beautiful hardcoded data so the UI works perfectly for screenshots
-                setAgentStatus('s', 'done', 'Done'); 
-                if (type === 'map') {
-                    renderMap({"centralNode":"Qiddiya City ESG Vision","branches":[{"name":"Play Together (People)","leaves":["Human Rights & Worker Welfare","Community Engagement","Diversity & Inclusion (43% Saudization)","Accessibility & Affordability"]},{"name":"Play Right (Environment)","leaves":["Carbon Footprint & Net Zero Strategy","Sustainable Mobility (80% EV parking)","Water Management (100% wastewater reuse)","Biodiversity & Tree Rescues"]},{"name":"Play Well (Governance)","leaves":["Corporate Governance Framework","Business Ethics & Integrity","Stakeholder Engagement","Supply Chain Sustainability"]}]});
-                } else {
-                    renderDeck([{"title":"Qiddiya City ESG Vision","bullets":["World's first city where play is a way of life","Aligned with Saudi Vision 2030 and UN SDGs","Commitment to Net Zero emissions by 2050","Driving economic diversification and tourism"]},{"title":"Play Together: Empowering People","bullets":["43% Saudization rate achieved in 2024","Comprehensive worker welfare and human rights standards","24% female workforce representation, up from 20%","Inclusive design for accessibility and affordability"]},{"title":"Play Right: Environmental Stewardship","bullets":["82% construction waste segregation rate","100% wastewater treated and reused for irrigation","Protecting Tuwaiq mountain biodiversity and heritage","Sustainable mobility with 80% EV charging slots"]},{"title":"Play Well: Ethical Governance","bullets":["Robust corporate governance led by the Board","100% of employees trained on ethics and integrity","Transparent stakeholder engagement programs","Strict supply chain sustainability and local procurement"]}]);
-                }
-                addMsg('system', '✅ Generated successfully.'); 
+                setAgentStatus('s', 'done', 'Done'); addMsg('error', ' Generation failed: ' + e.message); 
             }
         }
 
         async function callGemini(prompt, isJson) {
-            const models = ['gemini-2.0-flash', 'gemini-1.5-flash'];
-            for (const model of models) {
-                try {
-                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_KEY}`;
-                    const payload = { contents: [{ parts: [{ text: prompt }] }] };
-                    if (isJson) payload.generationConfig = { responseMimeType: "application/json" };
-                    
-                    // Timeout after 5 seconds to trigger fallback quickly if API is slow/rejecting
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 5000);
-                    
-                    const res = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload), signal: controller.signal });
-                    clearTimeout(timeoutId);
-                    
-                    const data = await res.json();
-                    if (data.error) throw new Error('API Error');
-                    return data.candidates[0].content.parts[0].text;
-                } catch (e) { throw new Error('Fallback'); }
-            }
-            throw new Error('Fallback');
+            // USING GEMINI 1.5 FLASH
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+            const payload = { contents: [{ parts: [{ text: prompt }] }] };
+            if (isJson) payload.generationConfig = { responseMimeType: "application/json" };
+            
+            const res = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload) });
+            const data = await res.json();
+            if (data.error) throw new Error(data.error.message);
+            return data.candidates[0].content.parts[0].text;
         }
 
         function renderMap(d) { const c = document.getElementById('mapBox'); if(!d.centralNode) return c.innerHTML = '<p class="text-rose-400">Invalid data.</p>'; c.innerHTML = `<div class="flex flex-col items-center w-full fade-in"><div class="bg-accent text-white px-8 py-4 rounded-full font-bold text-xl shadow-lg mb-12">${d.centralNode}</div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">${d.branches.map(b => `<div class="bg-primary border border-gray-800 rounded-xl p-6 hover:border-accent transition"><h3 class="text-emerald-400 font-bold text-lg mb-4">${b.name}</h3><ul class="space-y-2">${b.leaves.map(l => `<li class="text-sm text-gray-400 pl-4 border-l-2 border-gray-800">${l}</li>`).join('')}</ul></div>`).join('')}</div></div>`; }
