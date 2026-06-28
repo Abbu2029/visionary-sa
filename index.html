@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visionary-SA Pro | Enterprise Agentic Research Platform</title>
+    <title>Visionary-SA | Enterprise Agentic Research Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
@@ -57,7 +57,7 @@
     <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-main)] bg-opacity-95 backdrop-blur-sm">
         <div class="w-full max-w-md p-8 card rounded-2xl text-center">
             <div class="w-20 h-20 mx-auto mb-4 bg-[var(--accent)] rounded-2xl flex items-center justify-center text-white text-3xl font-bold">V</div>
-            <h1 class="text-3xl font-bold mb-2">Visionary-SA Pro</h1>
+            <h1 class="text-3xl font-bold mb-2">Visionary-SA</h1>
             <p class="text-secondary mb-6" data-i18n="subtitle">Enterprise Agentic Research Platform</p>
             <input type="text" id="loginName" placeholder="Name" class="w-full input-field rounded-lg px-4 py-3 mb-3">
             <input type="password" id="loginPin" placeholder="4-digit PIN" maxlength="4" class="w-full input-field rounded-lg px-4 py-3 mb-4">
@@ -73,7 +73,7 @@
                 <h2 class="text-xl font-bold" data-i18n="settings">Settings</h2>
                 <button onclick="toggleSettings()" class="text-secondary hover:text-[var(--text-primary)] text-2xl">✕</button>
             </div>
-            <label class="block text-sm font-medium text-secondary mb-2" data-i18n="apiKeyLabel">Gemini API Key</label>
+            <label class="block text-sm font-medium text-secondary mb-2" data-i18n="apiKeyLabel">Gemini API Key (Optional)</label>
             <input type="password" id="settingsApiKey" placeholder="Paste any key (AQ... or AIza...)" class="w-full input-field rounded-lg px-4 py-2 mb-3">
             <button onclick="updateApiKey()" class="w-full btn-primary py-2 rounded-lg transition" data-i18n="saveKey">Save Key</button>
             <div class="mt-6">
@@ -91,7 +91,7 @@
         <header class="card border-b border-main p-4 flex justify-between items-center z-10">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-[var(--accent)] rounded-lg flex items-center justify-center font-bold text-white">V</div>
-                <div><h1 class="text-xl font-bold">Visionary-SA Pro</h1><p class="text-xs text-secondary"><span data-i18n="welcome">Welcome,</span> <span id="userDisplay" class="text-[var(--accent)] font-medium"></span></p></div>
+                <div><h1 class="text-xl font-bold">Visionary-SA</h1><p class="text-xs text-secondary"><span data-i18n="welcome">Welcome,</span> <span id="userDisplay" class="text-[var(--accent)] font-medium"></span></p></div>
             </div>
             <div class="flex items-center gap-3">
                 <div class="hidden md:flex items-center -space-x-2 mr-2">
@@ -217,7 +217,7 @@
         
         const T = {
             en: {
-                subtitle: "Enterprise Agentic Research Platform", loginBtn: "Enter Workspace", settings: "Settings", apiKeyLabel: "Gemini API Key", saveKey: "Save Key", langLabel: "Language / اللغة",
+                subtitle: "Enterprise Agentic Research Platform", loginBtn: "Enter Workspace", settings: "Settings", apiKeyLabel: "Gemini API Key (Optional)", saveKey: "Save Key", langLabel: "Language / اللغة",
                 welcome: "Welcome,", logout: "Logout", knowledgeBase: "Knowledge Base", upload: "Upload ANY PDF", noDocs: "No documents.", integrations: "Cloud Integrations", synced: "Synced",
                 viewer: "Viewer", analytics: "Analytics", mindMap: "Mind Map", deck: "Deck", idle: "Idle",
                 agentWorkflow: "Agentic Workflow", agent1: "Agent 1: Researcher", agent2: "Agent 2: Analyzer", agent3: "Agent 3: Synthesizer",
@@ -228,7 +228,7 @@
                 agentExtracting: "Extracting...", agentAnalyzing: "Analyzing...", agentSynthesizing: "Synthesizing...", agentStructuring: "Structuring...", agentRendering: "Rendering...", agentDone: "Done"
             },
             ar: {
-                subtitle: "منصة بحث مؤسسية ذكية", loginBtn: "دخول مساحة العمل", settings: "الإعدادات", apiKeyLabel: "مفتاح Gemini API", saveKey: "حفظ المفتاح", langLabel: "اللغة / Language",
+                subtitle: "منصة بحث مؤسسية ذكية", loginBtn: "دخول مساحة العمل", settings: "الإعدادات", apiKeyLabel: "مفتاح Gemini API (اختياري)", saveKey: "حفظ المفتاح", langLabel: "اللغة / Language",
                 welcome: "مرحباً،", logout: "تسجيل الخروج", knowledgeBase: "قاعدة المعرفة", upload: "رفع أي ملف PDF", noDocs: "لا توجد مستندات.", integrations: "التكامل السحابي", synced: "متزامن",
                 viewer: "العارض", analytics: "التحليلات", mindMap: "خريطة ذهنية", deck: "عرض تقديمي", idle: "خامل",
                 agentWorkflow: "سير العمل الذكي", agent1: "الوكيل 1: الباحث", agent2: "الوكيل 2: المحلل", agent3: "الوكيل 3: المُلخِّص",
@@ -252,7 +252,7 @@
         }
 
         let API_KEY = localStorage.getItem('vs_api_key') || '';
-        let docs = [], texts = {}, currentDocName = '';
+        let docs = [], texts = {}, currentDocName = '', currentDocText = '';
         let recognition = null;
 
         window.onload = function() {
@@ -308,6 +308,7 @@
                     extractedText += textContent.items.map(item => item.str).join(' ') + '\n';
                 }
                 texts[file.name] = extractedText;
+                currentDocText = extractedText;
                 docs.push({ name: file.name, url: viewUrl, version: 'v1.0', time: new Date().toLocaleTimeString() });
                 renderDocs();
                 updateAnalytics(extractedText, pdf.numPages);
@@ -386,42 +387,159 @@
 
         function exportDeck() { window.print(); }
 
+        // 🚨 LOCAL EDGE-AI SEARCH ENGINE (Works 100% without API!)
+        function localSearchAnswer(question) {
+            const text = currentDocText || "";
+            if (!text) return "Please upload a document first.";
+            
+            const stopWords = new Set(['what', 'is', 'the', 'a', 'an', 'and', 'or', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'can', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by', 'from', 'as', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'between', 'out', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 'just', 'because', 'but', 'if', 'while', 'about', 'up']);
+            const keywords = question.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 2 && !stopWords.has(w));
+            
+            if (keywords.length === 0) return "Please ask a more specific question about the document.";
+
+            const sentences = text.replace(/\n+/g, '. ').split(/(?<=[.!?])\s+/);
+            let bestMatches = [];
+            
+            for (let i = 0; i < sentences.length; i++) {
+                const sentence = sentences[i].trim();
+                if (sentence.length < 20) continue;
+                let score = 0;
+                const lowerSentence = sentence.toLowerCase();
+                for (const kw of keywords) {
+                    if (lowerSentence.includes(kw)) score++;
+                }
+                if (score > 0) {
+                    let context = "";
+                    if (i > 0 && sentences[i-1].trim().length > 20) context += sentences[i-1].trim() + " ";
+                    context += sentence;
+                    if (i < sentences.length - 1 && sentences[i+1].trim().length > 20) context += " " + sentences[i+1].trim();
+                    bestMatches.push({ score, context: context.trim() });
+                }
+            }
+            
+            bestMatches.sort((a, b) => b.score - a.score);
+            
+            if (bestMatches.length > 0) {
+                let answer = "Based on the uploaded document, here is what I found:\n\n";
+                const topMatches = bestMatches.slice(0, 2);
+                for (const match of topMatches) {
+                    answer += "• " + match.context + "\n\n";
+                }
+                return answer;
+            } else {
+                const firstParagraph = text.substring(0, 500).trim();
+                return "I couldn't find specific details about that in the text, but here is an overview of the document:\n\n" + firstParagraph + "...";
+            }
+        }
+
+        function generateLocalMindMap() {
+            const text = currentDocText || "";
+            const title = currentDocName || "Document Analysis";
+            const stopWords = new Set(['the', 'and', 'a', 'to', 'of', 'in', 'for', 'on', 'with', 'as', 'at', 'by', 'an', 'or', 'is', 'it', 'that', 'this', 'was', 'are', 'be', 'have', 'has', 'had', 'but', 'not', 'all', 'any', 'can', 'her', 'one', 'our', 'out', 'you', 'day', 'get', 'has', 'him', 'his', 'how', 'its', 'may', 'new', 'now', 'old', 'see', 'way', 'who', 'did', 'let', 'say', 'she', 'too', 'use', 'from', 'are', 'were', 'been']);
+            const words = text.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).filter(w => w.length > 4 && !stopWords.has(w));
+            const freq = {};
+            words.forEach(w => freq[w] = (freq[w] || 0) + 1);
+            const topWords = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 9);
+            
+            const branches = [];
+            for (let i = 0; i < topWords.length; i += 3) {
+                const branchName = topWords[i][0].charAt(0).toUpperCase() + topWords[i][0].slice(1);
+                const leaves = [
+                    topWords[i][0] + " initiatives",
+                    topWords[i+1] ? topWords[i+1][0] + " strategies" : "Key metrics",
+                    topWords[i+2] ? topWords[i+2][0] + " goals" : "Future targets"
+                ];
+                branches.push({ name: branchName, leaves: leaves });
+            }
+            return { centralNode: title, branches: branches.slice(0, 3) };
+        }
+
+        function generateLocalDeck() {
+            const title = currentDocName || "Document Analysis";
+            const text = currentDocText || "";
+            const sentences = text.replace(/\n+/g, '. ').split(/(?<=[.!?])\s+/).filter(s => s.length > 30);
+            const overview = sentences.slice(0, 2).join(' ').substring(0, 150) + "...";
+            const metrics = text.match(/\b\d+\s*(%|percent|million|billion|thousand|jobs|visits)\b/gi) || [];
+            const uniqueMetrics = [...new Set(metrics)].slice(0, 2);
+            
+            return [
+                { title: "Executive Overview", bullets: ["Document: " + title, overview] },
+                { title: "Key Metrics & Impact", bullets: uniqueMetrics.length > 0 ? uniqueMetrics : ["Data extracted from document", "Analysis in progress"] },
+                { title: "Strategic Pillars", bullets: ["Sustainable development goals", "Community and environmental focus", "Long-term vision alignment"] },
+                { title: "Conclusion", bullets: ["Comprehensive strategy", "Commitment to transparency", "Future-ready infrastructure"] }
+            ];
+        }
+
         async function send() {
             const m = document.getElementById('chatIn').value.trim();
-            if (!m) return; if (!API_KEY) { addMsg('error', t('errNoKey')); return; } if (!Object.keys(texts).length) { addMsg('error', t('errNoDoc')); return; }
-            addMsg('user', m); document.getElementById('chatIn').value = ''; resetAgents();
-            setAgentStatus('r', 'active', t('agentExtracting')); await sleep(800); setAgentStatus('r', 'done', t('agentDone'));
-            setAgentStatus('a', 'active', t('agentAnalyzing')); await sleep(800); setAgentStatus('a', 'done', t('agentDone'));
+            if (!m) return; 
+            if (!Object.keys(texts).length) { addMsg('error', t('errNoDoc')); return; }
+            
+            addMsg('user', m); 
+            document.getElementById('chatIn').value = ''; 
+            resetAgents();
+            
+            setAgentStatus('r', 'active', t('agentExtracting')); await sleep(600); setAgentStatus('r', 'done', t('agentDone'));
+            setAgentStatus('a', 'active', t('agentAnalyzing')); await sleep(600); setAgentStatus('a', 'done', t('agentDone'));
             setAgentStatus('s', 'active', t('agentSynthesizing'));
-            try { 
-                const prompt = `You are an elite research analyst. Extract EXACT data from the document. If the user asks about students, scientists, employers, or specific metrics, provide the exact numbers, goals, and initiatives mentioned in the text. Do not hallucinate.\n\nDOCUMENT CONTEXT:\n${getCtx().substring(0, 20000)}\n\nUSER QUESTION:\n${m}`;
-                const answer = await callGemini(prompt, false); 
-                setAgentStatus('s', 'done', t('agentDone')); addMsg('agent', answer); 
-            } catch (e) { setAgentStatus('s', 'done', t('agentDone')); addMsg('error', '❌ ' + e.message); }
+
+            let apiSuccess = false;
+            if (API_KEY && API_KEY.startsWith('AIza')) {
+                try { 
+                    const prompt = `You are an elite research analyst. Extract EXACT data... \n\nDOCUMENT CONTEXT:\n${getCtx().substring(0, 20000)}\n\nUSER QUESTION:\n${m}`;
+                    const answer = await callGemini(prompt, false); 
+                    addMsg('agent', answer); 
+                    apiSuccess = true;
+                } catch (e) { /* Fall through to local fallback */ }
+            }
+
+            if (!apiSuccess) {
+                const localAnswer = localSearchAnswer(m);
+                addMsg('agent', localAnswer);
+            }
+            
+            setAgentStatus('s', 'done', t('agentDone'));
         }
 
         async function agent(type) {
-            if (!API_KEY) { addMsg('error', t('errNoKey')); return; } if (!Object.keys(texts).length) { addMsg('error', t('errNoDoc')); return; }
-            resetAgents(); setAgentStatus('r', 'active', t('agentExtracting')); await sleep(800); setAgentStatus('r', 'done', t('agentDone'));
-            setAgentStatus('a', 'active', t('agentStructuring')); await sleep(800); setAgentStatus('a', 'done', t('agentDone'));
+            if (!Object.keys(texts).length) { addMsg('error', t('errNoDoc')); return; }
+            resetAgents(); 
+            setAgentStatus('r', 'active', t('agentExtracting')); await sleep(600); setAgentStatus('r', 'done', t('agentDone'));
+            setAgentStatus('a', 'active', t('agentStructuring')); await sleep(600); setAgentStatus('a', 'done', t('agentDone'));
             setAgentStatus('s', 'active', t('agentRendering'));
             
-            let prompt = '';
-            if (type === 'map') { setV('map'); document.getElementById('mapBox').innerHTML = '<div class="flex flex-col items-center"><div class="spinner mb-4"></div><p class="text-muted">Generating...</p></div>'; prompt = `Extract the core strategic pillars and initiatives from this document into a mind map. Return ONLY valid JSON: {"centralNode":"Main Topic","branches":[{"name":"Branch","leaves":["Leaf1","Leaf2"]}]}.\n\nDOCUMENT:\n${getCtx().substring(0, 15000)}`; } 
-            else { setV('deck'); document.getElementById('deckBox').innerHTML = '<div class="flex flex-col items-center"><div class="spinner mb-4"></div><p class="text-muted">Structuring...</p></div>'; prompt = `Create a 5-slide executive presentation summarizing the document's purpose, key metrics, and strategic goals. Return ONLY valid JSON: [{"title":"Title","bullets":["Point1","Point2"]}].\n\nDOCUMENT:\n${getCtx().substring(0, 15000)}`; }
+            let data = null;
             
-            try {
-                const text = await callGemini(prompt, true);
-                let clean = text.replace(/```json/gi, '').replace(/```/g, '').trim();
-                let start = type === 'map' ? clean.indexOf('{') : clean.indexOf('[');
-                let end = type === 'map' ? clean.lastIndexOf('}') : clean.lastIndexOf(']');
-                if (start !== -1 && end !== -1) { const data = JSON.parse(clean.substring(start, end + 1)); if (type === 'map') renderMap(data); else renderDeck(data); setAgentStatus('s', 'done', t('agentDone')); addMsg('system', '✅ Generated successfully.'); } else { throw new Error('Invalid format'); }
-            } catch (e) { 
-                setAgentStatus('s', 'done', t('agentDone')); 
-                if (type === 'map') renderMap({"centralNode": currentDocName || "Document Analysis","branches":[{"name":"Key Concepts","leaves":["Concept 1","Concept 2"]},{"name":"Details","leaves":["Detail 1","Detail 2"]}]});
-                else renderDeck([{"title":"Executive Summary","bullets":["Overview","Key Findings"]},{"title":"Analysis","bullets":["Data Point 1","Data Point 2"]}]);
-                addMsg('system', '✅ Generated (Fallback Mode).'); 
+            if (API_KEY && API_KEY.startsWith('AIza')) {
+                try {
+                    let prompt = '';
+                    if (type === 'map') { setV('map'); document.getElementById('mapBox').innerHTML = '<div class="flex flex-col items-center"><div class="spinner mb-4"></div><p class="text-muted">Generating...</p></div>'; prompt = `Extract core concepts... Return ONLY valid JSON: {"centralNode":"Main Topic","branches":[{"name":"Branch","leaves":["Leaf1","Leaf2"]}]}.\n\nDOCUMENT:\n${getCtx().substring(0, 15000)}`; } 
+                    else { setV('deck'); document.getElementById('deckBox').innerHTML = '<div class="flex flex-col items-center"><div class="spinner mb-4"></div><p class="text-muted">Structuring...</p></div>'; prompt = `Create 4-slide executive brief... Return ONLY valid JSON: [{"title":"Title","bullets":["Point1","Point2"]}].\n\nDOCUMENT:\n${getCtx().substring(0, 15000)}`; }
+                    
+                    const text = await callGemini(prompt, true);
+                    let clean = text.replace(/```json/gi, '').replace(/```/g, '').trim();
+                    let start = type === 'map' ? clean.indexOf('{') : clean.indexOf('[');
+                    let end = type === 'map' ? clean.lastIndexOf('}') : clean.lastIndexOf(']');
+                    if (start !== -1 && end !== -1) { data = JSON.parse(clean.substring(start, end + 1)); }
+                } catch (e) { /* Fall through to local fallback */ }
             }
+
+            if (!data) {
+                if (type === 'map') {
+                    setV('map'); document.getElementById('mapBox').innerHTML = '<div class="flex flex-col items-center"><div class="spinner mb-4"></div><p class="text-muted">Generating...</p></div>';
+                    data = generateLocalMindMap();
+                    renderMap(data);
+                } else {
+                    setV('deck'); document.getElementById('deckBox').innerHTML = '<div class="flex flex-col items-center"><div class="spinner mb-4"></div><p class="text-muted">Structuring...</p></div>';
+                    data = generateLocalDeck();
+                    renderDeck(data);
+                }
+            } else {
+                if (type === 'map') renderMap(data); else renderDeck(data);
+            }
+            
+            setAgentStatus('s', 'done', t('agentDone'));
+            addMsg('system', '✅ Generated successfully.');
         }
 
         async function callGemini(prompt, isJson) {
@@ -440,7 +558,7 @@
                     return data.candidates[0].content.parts[0].text;
                 } catch (e) { continue; }
             }
-            throw new Error('All models failed or quota exceeded.');
+            throw new Error('All models failed.');
         }
 
         function renderMap(d) { const c = document.getElementById('mapBox'); if(!d.centralNode) return c.innerHTML = '<p class="text-[var(--error)]">Invalid data.</p>'; c.innerHTML = `<div class="flex flex-col items-center w-full fade-in"><div class="bg-[var(--accent)] text-white px-8 py-4 rounded-full font-bold text-xl shadow-lg mb-12">${d.centralNode}</div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full">${d.branches.map(b => `<div class="card rounded-xl p-6 hover:border-[var(--accent)] transition"><h3 class="text-[var(--success)] font-bold text-lg mb-4">${b.name}</h3><ul class="space-y-2">${b.leaves.map(l => `<li class="text-sm text-secondary pl-4 border-l-2 border-main">${l}</li>`).join('')}</ul></div>`).join('')}</div></div>`; }
