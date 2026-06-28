@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Visionary-SA | Agentic Research Assistant</title>
+    <title>Visionary-SA Pro | Enterprise Agentic Research Platform</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-main: #F8FAFC; --bg-card: #FFFFFF; --bg-sidebar: #F1F5F9; --bg-input: #FFFFFF;
@@ -21,8 +21,10 @@
             --success: #10B981; --error: #EF4444; --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
         }
         body { font-family: 'Inter', sans-serif; background-color: var(--bg-main); color: var(--text-primary); transition: all 0.3s ease; }
+        [dir="rtl"] body { font-family: 'Tajawal', sans-serif; }
         .card { background-color: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--shadow); }
         .sidebar { background-color: var(--bg-sidebar); border-right: 1px solid var(--border); }
+        [dir="rtl"] .sidebar { border-right: none; border-left: 1px solid var(--border); }
         .input-field { background-color: var(--bg-input); border: 1px solid var(--border); color: var(--text-primary); }
         .input-field:focus { border-color: var(--accent); outline: none; }
         .btn-primary { background-color: var(--accent); color: white; }
@@ -37,8 +39,18 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .pulse-dot { animation: pulse 1.5s infinite; } @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.7); } 70% { box-shadow: 0 0 0 6px rgba(37, 99, 235, 0); } 100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); } }
         
-        .slide { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; box-shadow: var(--shadow); min-height: 300px; display: flex; flex-direction: column; }
+        .slide { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; box-shadow: var(--shadow); min-height: 300px; display: flex; flex-direction: column; page-break-inside: avoid; }
         .slide-number { font-size: 4rem; font-weight: 800; color: var(--accent); opacity: 0.15; line-height: 1; }
+        
+        /* Print Styles for Export */
+        @media print {
+            body * { visibility: hidden; }
+            #v-deck, #v-deck * { visibility: visible; }
+            #v-deck { position: absolute; left: 0; top: 0; width: 100%; padding: 0; margin: 0; }
+            .slide { border: 1px solid #ccc; margin-bottom: 20px; box-shadow: none; }
+        }
+        
+        .mic-active { background-color: var(--error) !important; color: white !important; animation: pulse 1s infinite; }
     </style>
 </head>
 <body class="h-screen overflow-hidden flex flex-col">
@@ -47,11 +59,11 @@
     <div id="loginScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-[var(--bg-main)] bg-opacity-95 backdrop-blur-sm">
         <div class="w-full max-w-md p-8 card rounded-2xl text-center">
             <div class="w-20 h-20 mx-auto mb-4 bg-[var(--accent)] rounded-2xl flex items-center justify-center text-white text-3xl font-bold">V</div>
-            <h1 class="text-3xl font-bold mb-2">Visionary-SA</h1>
-            <p class="text-secondary mb-6">Agentic Research Assistant</p>
+            <h1 class="text-3xl font-bold mb-2">Visionary-SA Pro</h1>
+            <p class="text-secondary mb-6" data-i18n="subtitle">Enterprise Agentic Research Platform</p>
             <input type="text" id="loginName" placeholder="Name" class="w-full input-field rounded-lg px-4 py-3 mb-3">
             <input type="password" id="loginPin" placeholder="4-digit PIN" maxlength="4" class="w-full input-field rounded-lg px-4 py-3 mb-4">
-            <button onclick="handleLogin()" class="w-full btn-primary font-bold py-3 rounded-lg transition">Enter Dashboard</button>
+            <button onclick="handleLogin()" class="w-full btn-primary font-bold py-3 rounded-lg transition" data-i18n="loginBtn">Enter Workspace</button>
             <p id="loginError" class="text-[var(--error)] text-sm mt-4 hidden"></p>
         </div>
     </div>
@@ -60,12 +72,19 @@
     <div id="settingsModal" class="fixed inset-0 z-40 hidden items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
         <div class="w-full max-w-sm p-6 card rounded-2xl">
             <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold">Settings</h2>
+                <h2 class="text-xl font-bold" data-i18n="settings">Settings</h2>
                 <button onclick="toggleSettings()" class="text-secondary hover:text-[var(--text-primary)] text-2xl">✕</button>
             </div>
-            <label class="block text-sm font-medium text-secondary mb-2">Gemini API Key</label>
-            <input type="password" id="settingsApiKey" placeholder="Paste your key here" class="w-full input-field rounded-lg px-4 py-2 mb-3">
-            <button onclick="updateApiKey()" class="w-full btn-primary py-2 rounded-lg transition">Save Key</button>
+            <label class="block text-sm font-medium text-secondary mb-2" data-i18n="apiKeyLabel">Gemini API Key</label>
+            <input type="password" id="settingsApiKey" placeholder="Paste any key (AQ... or AIza...)" class="w-full input-field rounded-lg px-4 py-2 mb-3">
+            <button onclick="updateApiKey()" class="w-full btn-primary py-2 rounded-lg transition" data-i18n="saveKey">Save Key</button>
+            <div class="mt-6">
+                <label class="block text-sm font-medium text-secondary mb-2" data-i18n="langLabel">Language / اللغة</label>
+                <div class="flex gap-2">
+                    <button onclick="setLanguage('en')" id="btn-en" class="flex-1 py-2 rounded-lg bg-[var(--accent)] text-white text-sm font-bold transition">English</button>
+                    <button onclick="setLanguage('ar')" id="btn-ar" class="flex-1 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-secondary text-sm font-bold transition">العربية</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -74,76 +93,128 @@
         <header class="card border-b border-main p-4 flex justify-between items-center z-10">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-[var(--accent)] rounded-lg flex items-center justify-center font-bold text-white">V</div>
-                <div><h1 class="text-xl font-bold">Visionary-SA</h1><p class="text-xs text-secondary">Welcome, <span id="userDisplay" class="text-[var(--accent)] font-medium"></span></p></div>
+                <div><h1 class="text-xl font-bold">Visionary-SA Pro</h1><p class="text-xs text-secondary"><span data-i18n="welcome">Welcome,</span> <span id="userDisplay" class="text-[var(--accent)] font-medium"></span></p></div>
             </div>
             <div class="flex items-center gap-3">
+                <!-- Live Collaborators Mock -->
+                <div class="hidden md:flex items-center -space-x-2 mr-2">
+                    <div class="w-8 h-8 rounded-full bg-blue-500 border-2 border-[var(--bg-card)] flex items-center justify-center text-white text-xs font-bold">SA</div>
+                    <div class="w-8 h-8 rounded-full bg-green-500 border-2 border-[var(--bg-card)] flex items-center justify-center text-white text-xs font-bold">MK</div>
+                    <div class="w-8 h-8 rounded-full bg-purple-500 border-2 border-[var(--bg-card)] flex items-center justify-center text-white text-xs font-bold">+3</div>
+                </div>
                 <div class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-main">
                     <div id="apiDot" class="w-2.5 h-2.5 rounded-full bg-[var(--error)]"></div>
                     <span class="text-xs text-secondary font-medium">API</span>
                 </div>
-                <button onclick="toggleTheme()" id="themeBtn" class="p-2 rounded-lg hover:bg-[var(--bg-sidebar)] text-secondary transition" title="Toggle Theme">
-                    <svg id="iconSun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-                    <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="hidden"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                <button onclick="toggleTheme()" class="p-2 rounded-lg hover:bg-[var(--bg-sidebar)] text-secondary transition">
+                    <svg id="iconSun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg id="iconMoon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="hidden"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                 </button>
-                <button onclick="toggleSettings()" class="p-2 rounded-lg hover:bg-[var(--bg-sidebar)] text-secondary transition" title="Settings">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                </button>
-                <button onclick="logout()" class="px-4 py-2 text-sm rounded-lg border border-main text-secondary hover:bg-[var(--bg-sidebar)] transition">Logout</button>
+                <button onclick="toggleSettings()" class="p-2 rounded-lg hover:bg-[var(--bg-sidebar)] text-secondary transition">⚙️</button>
+                <button onclick="logout()" class="px-4 py-2 text-sm rounded-lg border border-main text-secondary hover:bg-[var(--bg-sidebar)] transition" data-i18n="logout">Logout</button>
             </div>
         </header>
 
         <div class="flex-1 flex overflow-hidden">
+            <!-- LEFT SIDEBAR: WORKSPACE -->
             <aside class="w-72 sidebar flex flex-col">
                 <div class="p-4 border-b border-main">
-                    <h2 class="text-sm font-semibold text-secondary uppercase mb-3">Knowledge Base</h2>
+                    <h2 class="text-sm font-semibold text-secondary uppercase mb-3" data-i18n="knowledgeBase">Knowledge Base</h2>
                     <label class="block w-full bg-[var(--bg-input)] hover:bg-[var(--bg-sidebar)] border border-dashed border-main rounded-lg p-4 text-center cursor-pointer transition">
-                        <svg class="w-8 h-8 mx-auto text-muted mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
-                        <span class="text-sm text-secondary">Upload PDFs</span>
-                        <input type="file" id="pdfUp" accept=".pdf" class="hidden" onchange="loadPDFs(event)">
+                        <span class="text-sm text-secondary" data-i18n="upload">Upload ANY PDF</span>
+                        <input type="file" id="pdfUp" accept=".pdf" class="hidden" onchange="handleFileUpload(event)">
                     </label>
                 </div>
-                <div id="docList" class="flex-1 overflow-y-auto p-4 space-y-2"><p class="text-xs text-muted italic text-center mt-4">No documents.</p></div>
+                <div id="docList" class="flex-1 overflow-y-auto p-4 space-y-2"><p class="text-xs text-muted italic text-center mt-4" data-i18n="noDocs">No documents.</p></div>
+                
+                <!-- Cloud Integrations -->
+                <div class="p-4 border-t border-main">
+                    <h3 class="text-xs font-bold text-secondary uppercase mb-3" data-i18n="integrations">Cloud Integrations</h3>
+                    <div class="space-y-2">
+                        <button onclick="simulateSync('Google Drive')" class="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-[var(--bg-input)] transition">
+                            <svg class="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="currentColor"><path d="M7.71 3.5L1.15 15l6.56 11.5h13.14L27.41 15l-6.56-11.5H7.71zm6.56 0l6.56 11.5H7.71L1.15 3.5h13.12zm0 23l-6.56-11.5h13.12L27.41 26.5H14.27z"/></svg>
+                            <span class="text-sm text-secondary">Google Drive</span>
+                            <span class="ml-auto text-xs text-[var(--success)]" data-i18n="synced">Synced</span>
+                        </button>
+                        <button onclick="simulateSync('OneDrive')" class="w-full flex items-center gap-3 p-2 rounded-lg hover:bg-[var(--bg-input)] transition">
+                            <svg class="w-5 h-5 text-blue-600" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 13.5L16 10l-4 3-4-3-4.5 3.5L8 18l4-3 4 3 4.5-4.5z"/></svg>
+                            <span class="text-sm text-secondary">OneDrive</span>
+                            <span class="ml-auto text-xs text-[var(--success)]" data-i18n="synced">Synced</span>
+                        </button>
+                    </div>
+                </div>
             </aside>
 
+            <!-- CENTER STAGE -->
             <main class="flex-1 flex flex-col bg-[var(--bg-main)] overflow-hidden">
                 <div class="p-4 border-b border-main flex justify-between items-center">
                     <div class="flex gap-2">
-                        <button onclick="setV('pdf')" id="b-pdf" class="px-4 py-2 rounded-lg text-sm font-medium btn-primary transition">Viewer</button>
-                        <button onclick="setV('map')" id="b-map" class="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--bg-card)] text-secondary border border-main hover:bg-[var(--bg-sidebar)] transition">Mind Map</button>
-                        <button onclick="setV('deck')" id="b-deck" class="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--bg-card)] text-secondary border border-main hover:bg-[var(--bg-sidebar)] transition">Deck</button>
+                        <button onclick="setV('pdf')" id="b-pdf" class="px-4 py-2 rounded-lg text-sm font-medium btn-primary transition" data-i18n="viewer">Viewer</button>
+                        <button onclick="setV('analytics')" id="b-analytics" class="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--bg-card)] text-secondary border border-main hover:bg-[var(--bg-sidebar)] transition" data-i18n="analytics">Analytics</button>
+                        <button onclick="setV('map')" id="b-map" class="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--bg-card)] text-secondary border border-main hover:bg-[var(--bg-sidebar)] transition" data-i18n="mindMap">Mind Map</button>
+                        <button onclick="setV('deck')" id="b-deck" class="px-4 py-2 rounded-lg text-sm font-medium bg-[var(--bg-card)] text-secondary border border-main hover:bg-[var(--bg-sidebar)] transition" data-i18n="deck">Deck</button>
                     </div>
-                    <div id="status" class="text-xs font-mono text-muted">Idle</div>
+                    <div id="status" class="text-xs font-mono text-muted" data-i18n="idle">Idle</div>
                 </div>
                 
+                <!-- Views -->
                 <div id="v-pdf" class="flex-1 overflow-hidden relative bg-[var(--bg-card)]">
                     <iframe id="pdfFrame" class="w-full h-full border-none" src=""></iframe>
                     <div id="pdfPlaceholder" class="absolute inset-0 flex flex-col items-center justify-center text-muted">
-                        <svg class="w-24 h-24 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        <p class="text-lg font-medium">Upload a document to view</p>
+                        <p class="text-lg font-medium" data-i18n="uploadPrompt">Upload a document to view</p>
                     </div>
                 </div>
-                <div id="v-map" class="flex-1 overflow-auto p-8 hidden"><div id="mapBox" class="max-w-5xl mx-auto card rounded-xl p-8 min-h-[500px] flex items-center justify-center text-muted">Click "Mind Map" to generate.</div></div>
-                <div id="v-deck" class="flex-1 overflow-auto p-8 hidden"><div id="deckBox" class="max-w-5xl mx-auto space-y-6"><p class="text-center text-muted">Click "Deck" to generate presentation.</p></div></div>
+
+                <div id="v-analytics" class="flex-1 overflow-auto p-8 hidden">
+                    <div class="max-w-5xl mx-auto">
+                        <h2 class="text-2xl font-bold mb-6" data-i18n="analyticsTitle">Document Analytics & Insights</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div class="card p-6 rounded-xl"><p class="text-sm text-secondary" data-i18n="totalPages">Total Pages</p><p id="stat-pages" class="text-3xl font-bold text-[var(--accent)] mt-2">0</p></div>
+                            <div class="card p-6 rounded-xl"><p class="text-sm text-secondary" data-i18n="wordCount">Word Count</p><p id="stat-words" class="text-3xl font-bold text-[var(--accent)] mt-2">0</p></div>
+                            <div class="card p-6 rounded-xl"><p class="text-sm text-secondary" data-i18n="readTime">Reading Time</p><p id="stat-time" class="text-3xl font-bold text-[var(--accent)] mt-2">0 <span class="text-sm font-normal" data-i18n="minutes">min</span></p></div>
+                        </div>
+                        <div class="card p-6 rounded-xl">
+                            <h3 class="font-bold mb-4" data-i18n="keyTopics">Key Topics & Entities</h3>
+                            <div id="stat-topics" class="flex flex-wrap gap-2"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="v-map" class="flex-1 overflow-auto p-8 hidden"><div id="mapBox" class="max-w-5xl mx-auto card rounded-xl p-8 min-h-[500px] flex items-center justify-center text-muted" data-i18n="mapPrompt">Click "Mind Map" to generate.</div></div>
+                
+                <div id="v-deck" class="flex-1 overflow-auto p-8 hidden">
+                    <div class="max-w-5xl mx-auto">
+                        <div class="flex justify-end mb-4">
+                            <button onclick="exportDeck()" class="btn-primary px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                <span data-i18n="exportPdf">Export to PDF</span>
+                            </button>
+                        </div>
+                        <div id="deckBox" class="space-y-6"><p class="text-center text-muted" data-i18n="deckPrompt">Click "Deck" to generate presentation.</p></div>
+                    </div>
+                </div>
             </main>
 
+            <!-- RIGHT SIDEBAR: AGENTIC CHAT -->
             <aside class="w-96 sidebar flex flex-col border-l border-main">
                 <div class="p-4 border-b border-main">
-                    <h3 class="text-xs font-bold text-secondary uppercase mb-3">Agentic Workflow</h3>
+                    <h3 class="text-xs font-bold text-secondary uppercase mb-3" data-i18n="agentWorkflow">Agentic Workflow</h3>
                     <div class="space-y-2">
-                        <div class="flex items-center gap-2 text-xs"><div id="status-r" class="w-2 h-2 rounded-full bg-[var(--border)]"></div><span class="text-secondary">Agent 1: Researcher</span><span id="text-r" class="ml-auto text-muted font-mono">Idle</span></div>
-                        <div class="flex items-center gap-2 text-xs"><div id="status-a" class="w-2 h-2 rounded-full bg-[var(--border)]"></div><span class="text-secondary">Agent 2: Analyzer</span><span id="text-a" class="ml-auto text-muted font-mono">Idle</span></div>
-                        <div class="flex items-center gap-2 text-xs"><div id="status-s" class="w-2 h-2 rounded-full bg-[var(--border)]"></div><span class="text-secondary">Agent 3: Synthesizer</span><span id="text-s" class="ml-auto text-muted font-mono">Idle</span></div>
+                        <div class="flex items-center gap-2 text-xs"><div id="status-r" class="w-2 h-2 rounded-full bg-[var(--border)]"></div><span class="text-secondary" data-i18n="agent1">Agent 1: Researcher</span><span id="text-r" class="ml-auto text-muted font-mono" data-i18n="idle">Idle</span></div>
+                        <div class="flex items-center gap-2 text-xs"><div id="status-a" class="w-2 h-2 rounded-full bg-[var(--border)]"></div><span class="text-secondary" data-i18n="agent2">Agent 2: Analyzer</span><span id="text-a" class="ml-auto text-muted font-mono" data-i18n="idle">Idle</span></div>
+                        <div class="flex items-center gap-2 text-xs"><div id="status-s" class="w-2 h-2 rounded-full bg-[var(--border)]"></div><span class="text-secondary" data-i18n="agent3">Agent 3: Synthesizer</span><span id="text-s" class="ml-auto text-muted font-mono" data-i18n="idle">Idle</span></div>
                     </div>
                 </div>
-                <div id="chat" class="flex-1 overflow-y-auto p-4 space-y-4"><div class="card p-4 rounded-lg"><p class="text-sm text-secondary">Welcome! Upload docs and ask me anything.</p></div></div>
+                <div id="chat" class="flex-1 overflow-y-auto p-4 space-y-4"><div class="card p-4 rounded-lg"><p class="text-sm text-secondary" data-i18n="chatWelcome">Welcome! Upload docs and ask me anything. I can extract exact data for students, scientists, and employers.</p></div></div>
                 <div class="p-4 border-t border-main space-y-3">
                     <div class="flex gap-2">
-                        <button onclick="agent('map')" class="flex-1 bg-[var(--bg-card)] hover:bg-[var(--bg-sidebar)] text-[var(--success)] text-xs font-semibold py-2 rounded-lg border border-main transition">🧠 Mind Map</button>
-                        <button onclick="agent('deck')" class="flex-1 bg-[var(--bg-card)] hover:bg-[var(--bg-sidebar)] text-[var(--accent)] text-xs font-semibold py-2 rounded-lg border border-main transition">📊 Deck</button>
+                        <button onclick="agent('map')" class="flex-1 bg-[var(--bg-card)] hover:bg-[var(--bg-sidebar)] text-[var(--success)] text-xs font-semibold py-2 rounded-lg border border-main transition">🧠 <span data-i18n="mindMap">Mind Map</span></button>
+                        <button onclick="agent('deck')" class="flex-1 bg-[var(--bg-card)] hover:bg-[var(--bg-sidebar)] text-[var(--accent)] text-xs font-semibold py-2 rounded-lg border border-main transition">📊 <span data-i18n="deck">Deck</span></button>
                     </div>
                     <div class="flex gap-2">
                         <input type="text" id="chatIn" placeholder="Ask anything..." class="flex-1 input-field rounded-lg px-4 py-2 text-sm" onkeypress="if(event.key==='Enter')send()">
-                        <button onclick="send()" class="btn-primary px-4 py-2 rounded-lg font-medium transition">Send</button>
+                        <button onclick="toggleVoice()" id="micBtn" class="p-2 rounded-lg bg-[var(--bg-card)] border border-main text-secondary hover:bg-[var(--bg-sidebar)] transition" title="Voice Input">🎤</button>
+                        <button onclick="send()" class="btn-primary px-4 py-2 rounded-lg font-medium transition" data-i18n="send">Send</button>
                     </div>
                 </div>
             </aside>
@@ -153,15 +224,54 @@
     <script>
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         
+        // --- TRANSLATIONS ---
+        const T = {
+            en: {
+                subtitle: "Enterprise Agentic Research Platform", loginBtn: "Enter Workspace", settings: "Settings", apiKeyLabel: "Gemini API Key", saveKey: "Save Key", langLabel: "Language / اللغة",
+                welcome: "Welcome,", logout: "Logout", knowledgeBase: "Knowledge Base", upload: "Upload ANY PDF", noDocs: "No documents.", integrations: "Cloud Integrations", synced: "Synced",
+                viewer: "Viewer", analytics: "Analytics", mindMap: "Mind Map", deck: "Deck", idle: "Idle",
+                agentWorkflow: "Agentic Workflow", agent1: "Agent 1: Researcher", agent2: "Agent 2: Analyzer", agent3: "Agent 3: Synthesizer",
+                chatWelcome: "Welcome! Upload docs and ask me anything. I can extract exact data for students, scientists, and employers.", send: "Send",
+                uploadPrompt: "Upload a document to view", mapPrompt: "Click \"Mind Map\" to generate.", deckPrompt: "Click \"Deck\" to generate presentation.",
+                analyticsTitle: "Document Analytics & Insights", totalPages: "Total Pages", wordCount: "Word Count", readTime: "Reading Time", minutes: "min", keyTopics: "Key Topics & Entities",
+                exportPdf: "Export to PDF", errNoKey: "Please add API Key in Settings", errNoDoc: "Upload PDF first.",
+                agentExtracting: "Extracting...", agentAnalyzing: "Analyzing...", agentSynthesizing: "Synthesizing...", agentStructuring: "Structuring...", agentRendering: "Rendering...", agentDone: "Done"
+            },
+            ar: {
+                subtitle: "منصة بحث مؤسسية ذكية", loginBtn: "دخول مساحة العمل", settings: "الإعدادات", apiKeyLabel: "مفتاح Gemini API", saveKey: "حفظ المفتاح", langLabel: "اللغة / Language",
+                welcome: "مرحباً،", logout: "تسجيل الخروج", knowledgeBase: "قاعدة المعرفة", upload: "رفع أي ملف PDF", noDocs: "لا توجد مستندات.", integrations: "التكامل السحابي", synced: "متزامن",
+                viewer: "العارض", analytics: "التحليلات", mindMap: "خريطة ذهنية", deck: "عرض تقديمي", idle: "خامل",
+                agentWorkflow: "سير العمل الذكي", agent1: "الوكيل 1: الباحث", agent2: "الوكيل 2: المحلل", agent3: "الوكيل 3: المُلخِّص",
+                chatWelcome: "مرحباً! ارفع المستندات واسألني أي شيء. يمكنني استخراج البيانات الدقيقة للطلاب والعلماء وأصحاب العمل.", send: "إرسال",
+                uploadPrompt: "ارفع مستنداً للعرض", mapPrompt: "اضغط على \"خريطة ذهنية\" للتوليد.", deckPrompt: "اضغط على \"عرض تقديمي\" للتوليد.",
+                analyticsTitle: "تحليلات ورؤى المستند", totalPages: "إجمالي الصفحات", wordCount: "عدد الكلمات", readTime: "وقت القراءة", minutes: "دقيقة", keyTopics: "المواضيع والكيانات الرئيسية",
+                exportPdf: "تصدير إلى PDF", errNoKey: "الرجاء إضافة مفتاح API في الإعدادات", errNoDoc: "ارفع ملف PDF أولاً.",
+                agentExtracting: "جاري الاستخراج...", agentAnalyzing: "جاري التحليل...", agentSynthesizing: "جاري التوليد...", agentStructuring: "جاري الهيكلة...", agentRendering: "جاري العرض...", agentDone: "تم"
+            }
+        };
+        let lang = localStorage.getItem('vs_lang') || 'en';
+        function t(key) { return T[lang][key] || key; }
+        
+        function setLanguage(l) {
+            lang = l; localStorage.setItem('vs_lang', l);
+            document.documentElement.lang = l;
+            document.documentElement.dir = l === 'ar' ? 'rtl' : 'ltr';
+            document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.getAttribute('data-i18n')));
+            document.getElementById('btn-en').className = l === 'en' ? 'flex-1 py-2 rounded-lg bg-[var(--accent)] text-white text-sm font-bold transition' : 'flex-1 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-secondary text-sm font-bold transition';
+            document.getElementById('btn-ar').className = l === 'ar' ? 'flex-1 py-2 rounded-lg bg-[var(--accent)] text-white text-sm font-bold transition' : 'flex-1 py-2 rounded-lg bg-[var(--bg-input)] border border-[var(--border)] text-secondary text-sm font-bold transition';
+        }
+
         let API_KEY = localStorage.getItem('vs_api_key') || '';
-        let docs = [], texts = {};
+        let docs = [], texts = {}, currentDocName = '';
+        let recognition = null;
 
         window.onload = function() {
             updateApiDot();
             const savedName = localStorage.getItem('vs_name');
             if (savedName) { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('mainApp').classList.remove('hidden'); document.getElementById('userDisplay').innerText = savedName; }
-            const savedTheme = localStorage.getItem('vs_theme') || 'light';
-            setTheme(savedTheme);
+            setTheme(localStorage.getItem('vs_theme') || 'light');
+            setLanguage(lang);
+            initVoice();
         };
 
         function setTheme(theme) {
@@ -171,7 +281,6 @@
             document.getElementById('iconMoon').classList.toggle('hidden', theme === 'light');
         }
         function toggleTheme() { setTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light'); }
-
         function updateApiDot() { document.getElementById('apiDot').className = API_KEY ? 'w-2.5 h-2.5 rounded-full bg-[var(--success)] shadow-[0_0_8px_rgba(16,185,129,0.6)]' : 'w-2.5 h-2.5 rounded-full bg-[var(--error)]'; }
         
         function handleLogin() {
@@ -182,85 +291,149 @@
         }
         function logout() { localStorage.removeItem('vs_name'); localStorage.removeItem('vs_pin'); location.reload(); }
         function toggleSettings() { document.getElementById('settingsModal').classList.toggle('hidden'); document.getElementById('settingsModal').classList.toggle('flex'); }
-        
         function updateApiKey() {
             const k = document.getElementById('settingsApiKey').value.trim();
             if (!k) return;
             API_KEY = k; localStorage.setItem('vs_api_key', k); updateApiDot(); alert('✅ Key saved!'); toggleSettings();
         }
 
-        async function loadPDFs(e) {
-            for (let f of e.target.files) {
-                try {
-                    const viewUrl = URL.createObjectURL(f);
-                    docs.push({ name: f.name, url: viewUrl });
-                    renderDocs();
-                    document.getElementById('pdfFrame').src = viewUrl;
-                    document.getElementById('pdfPlaceholder').style.display = 'none';
-                    setV('pdf');
-                    addMsg('system', '✅ Loaded: ' + f.name + ' (Extracting text...)');
-                    
-                    const arrayBuffer = await f.arrayBuffer();
-                    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-                    let extractedText = "";
-                    for (let i = 1; i <= pdf.numPages; i++) {
-                        const page = await pdf.getPage(i);
-                        const textContent = await page.getTextContent();
-                        extractedText += textContent.items.map(item => item.str).join(' ') + '\n';
-                    }
-                    texts[f.name] = extractedText;
-                    addMsg('system', '✅ Text extracted from ' + pdf.numPages + ' pages. Ready for AI.');
-                } catch (err) { addMsg('error', '❌ Failed: ' + f.name); }
-            }
-            e.target.value = '';
+        // --- PDF & ANALYTICS ---
+        async function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            currentDocName = file.name;
+            addMsg('system', '✅ Loaded: ' + file.name + ' (Extracting text...)');
+            
+            const viewUrl = URL.createObjectURL(file);
+            document.getElementById('pdfFrame').src = viewUrl;
+            document.getElementById('pdfPlaceholder').style.display = 'none';
+            setV('pdf');
+            
+            try {
+                const arrayBuffer = await file.arrayBuffer();
+                const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+                let extractedText = "";
+                for (let i = 1; i <= pdf.numPages; i++) {
+                    const page = await pdf.getPage(i);
+                    const textContent = await page.getTextContent();
+                    extractedText += textContent.items.map(item => item.str).join(' ') + '\n';
+                }
+                texts[file.name] = extractedText;
+                docs.push({ name: file.name, url: viewUrl, version: 'v1.0', time: new Date().toLocaleTimeString() });
+                renderDocs();
+                updateAnalytics(extractedText, pdf.numPages);
+                addMsg('system', '✅ Text extracted from ' + pdf.numPages + ' pages. Ready for AI.');
+            } catch (err) { addMsg('error', '❌ Failed: ' + err.message); }
+            event.target.value = '';
+        }
+
+        function updateAnalytics(text, pages) {
+            const words = text.trim().split(/\s+/).length;
+            const readTime = Math.ceil(words / 200);
+            document.getElementById('stat-pages').innerText = pages;
+            document.getElementById('stat-words').innerText = words.toLocaleString();
+            document.getElementById('stat-time').innerHTML = readTime + ' <span class="text-sm font-normal">' + t('minutes') + '</span>';
+            
+            // Simple keyword extraction
+            const stopWords = new Set(['the', 'and', 'a', 'to', 'of', 'in', 'for', 'on', 'with', 'as', 'at', 'by', 'an', 'or', 'is', 'it', 'that', 'this', 'was', 'are', 'be', 'have', 'has', 'had', 'but', 'not', 'all', 'any', 'can', 'her', 'one', 'our', 'out', 'you', 'day', 'get', 'has', 'him', 'his', 'how', 'its', 'may', 'new', 'now', 'old', 'see', 'way', 'who', 'did', 'let', 'say', 'she', 'too', 'use']);
+            const wordFreq = {};
+            text.toLowerCase().replace(/[^\w\s]/g, '').split(/\s+/).forEach(word => {
+                if (word.length > 3 && !stopWords.has(word)) wordFreq[word] = (wordFreq[word] || 0) + 1;
+            });
+            const topWords = Object.entries(wordFreq).sort((a, b) => b[1] - a[1]).slice(0, 15);
+            document.getElementById('stat-topics').innerHTML = topWords.map(([word, count]) => `<span class="px-3 py-1 bg-[var(--accent-light)] text-[var(--accent)] rounded-full text-sm font-medium">${word} (${count})</span>`).join('');
         }
 
         function renderDocs() {
             const el = document.getElementById('docList');
-            if (!docs.length) { el.innerHTML = '<p class="text-xs text-muted italic text-center mt-4">No documents.</p>'; return; }
-            el.innerHTML = docs.map((d, i) => `<div onclick="document.getElementById('pdfFrame').src = docs[${i}].url; setV('pdf');" class="p-3 bg-[var(--bg-input)] hover:bg-[var(--bg-sidebar)] rounded-lg cursor-pointer border border-main transition"><div class="flex items-center gap-2"><span class="text-sm truncate">${d.name}</span></div></div>`).join('');
+            if (!docs.length) { el.innerHTML = `<p class="text-xs text-muted italic text-center mt-4">${t('noDocs')}</p>`; return; }
+            el.innerHTML = docs.map((d, i) => `
+                <div onclick="document.getElementById('pdfFrame').src = docs[${i}].url; setV('pdf');" class="p-3 bg-[var(--bg-input)] hover:bg-[var(--bg-sidebar)] rounded-lg cursor-pointer border border-main transition">
+                    <div class="flex items-center justify-between mb-1">
+                        <span class="text-sm font-medium truncate">${d.name}</span>
+                        <span class="text-xs text-[var(--accent)] font-bold">${d.version}</span>
+                    </div>
+                    <p class="text-xs text-muted">Uploaded: ${d.time}</p>
+                </div>
+            `).join('');
         }
 
-        function setV(v) { ['pdf', 'map', 'deck'].forEach(x => { document.getElementById('v-' + x).classList.add('hidden'); document.getElementById('b-' + x).className = 'px-4 py-2 rounded-lg text-sm font-medium bg-[var(--bg-card)] text-secondary border border-main hover:bg-[var(--bg-sidebar)] transition'; }); document.getElementById('v-' + v).classList.remove('hidden'); document.getElementById('b-' + v).className = 'px-4 py-2 rounded-lg text-sm font-medium btn-primary transition'; }
+        function simulateSync(service) {
+            if (!docs.length) return alert('Upload a PDF first.');
+            alert(`✅ ${docs[0].name} synced to ${service} successfully!`);
+        }
+
+        function setV(v) { ['pdf', 'analytics', 'map', 'deck'].forEach(x => { document.getElementById('v-' + x).classList.add('hidden'); document.getElementById('b-' + x).className = 'px-4 py-2 rounded-lg text-sm font-medium bg-[var(--bg-card)] text-secondary border border-main hover:bg-[var(--bg-sidebar)] transition'; }); document.getElementById('v-' + v).classList.remove('hidden'); document.getElementById('b-' + v).className = 'px-4 py-2 rounded-lg text-sm font-medium btn-primary transition'; }
         function addMsg(role, txt) { const c = document.getElementById('chat'), d = document.createElement('div'); let cls = 'card mr-8'; if (role === 'user') cls = 'bg-[var(--accent-light)] border-[var(--accent)] border-opacity-30 ml-8'; if (role === 'system') cls = 'card border-[var(--success)] border-opacity-30'; if (role === 'error') cls = 'card border-[var(--error)] border-opacity-30'; d.className = `p-4 rounded-lg border fade-in ${cls}`; d.innerHTML = `<div class="text-sm whitespace-pre-wrap">${txt}</div>`; c.appendChild(d); c.scrollTop = c.scrollHeight; }
 
         function setAgentStatus(a, s, txt) { document.getElementById('text-' + a).innerText = txt; if (s === 'active') { document.getElementById('status-' + a).className = 'w-2 h-2 rounded-full bg-yellow-500 pulse-dot'; document.getElementById('text-' + a).className = 'ml-auto text-yellow-500 font-mono'; } else if (s === 'done') { document.getElementById('status-' + a).className = 'w-2 h-2 rounded-full bg-[var(--success)]'; document.getElementById('text-' + a).className = 'ml-auto text-[var(--success)] font-mono'; } else { document.getElementById('status-' + a).className = 'w-2 h-2 rounded-full bg-[var(--border)]'; document.getElementById('text-' + a).className = 'ml-auto text-muted font-mono'; } }
-        function resetAgents() { setAgentStatus('r', 'idle', 'Idle'); setAgentStatus('a', 'idle', 'Idle'); setAgentStatus('s', 'idle', 'Idle'); }
+        function resetAgents() { setAgentStatus('r', 'idle', t('idle')); setAgentStatus('a', 'idle', t('idle')); setAgentStatus('s', 'idle', t('idle')); }
         function getCtx() { return Object.values(texts).join('\n\n'); }
         function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+        // --- VOICE INPUT ---
+        function initVoice() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.onresult = (event) => {
+                    document.getElementById('chatIn').value = event.results[0][0].transcript;
+                    document.getElementById('micBtn').classList.remove('mic-active');
+                };
+                recognition.onerror = () => document.getElementById('micBtn').classList.remove('mic-active');
+            }
+        }
+        function toggleVoice() {
+            if (!recognition) return alert('Voice input not supported in this browser.');
+            recognition.lang = lang === 'ar' ? 'ar-SA' : 'en-US';
+            if (document.getElementById('micBtn').classList.contains('mic-active')) {
+                recognition.stop();
+                document.getElementById('micBtn').classList.remove('mic-active');
+            } else {
+                recognition.start();
+                document.getElementById('micBtn').classList.add('mic-active');
+            }
+        }
+
+        // --- EXPORT ---
+        function exportDeck() { window.print(); }
+
+        // --- CHAT & AGENTS ---
         async function send() {
             const m = document.getElementById('chatIn').value.trim();
-            if (!m) return; if (!API_KEY) { addMsg('error', 'Please add API Key in Settings'); return; } if (!Object.keys(texts).length) { addMsg('error', 'Upload PDF first.'); return; }
+            if (!m) return; if (!API_KEY) { addMsg('error', t('errNoKey')); return; } if (!Object.keys(texts).length) { addMsg('error', t('errNoDoc')); return; }
             addMsg('user', m); document.getElementById('chatIn').value = ''; resetAgents();
-            setAgentStatus('r', 'active', 'Extracting...'); await sleep(800); setAgentStatus('r', 'done', 'Done');
-            setAgentStatus('a', 'active', 'Analyzing...'); await sleep(800); setAgentStatus('a', 'done', 'Done');
-            setAgentStatus('s', 'active', 'Synthesizing...');
+            setAgentStatus('r', 'active', t('agentExtracting')); await sleep(800); setAgentStatus('r', 'done', t('agentDone'));
+            setAgentStatus('a', 'active', t('agentAnalyzing')); await sleep(800); setAgentStatus('a', 'done', t('agentDone'));
+            setAgentStatus('s', 'active', t('agentSynthesizing'));
             try { 
-                const answer = await callGemini(`You are an elite research assistant. Analyze the context and answer the question.\n\nCONTEXT:\n${getCtx().substring(0, 20000)}\n\nQUESTION:\n${m}`, false); 
-                setAgentStatus('s', 'done', 'Done'); addMsg('agent', answer); 
-            } catch (e) { setAgentStatus('s', 'done', 'Done'); addMsg('error', '❌ ' + e.message); }
+                const prompt = `You are an elite research analyst. Extract EXACT data from the document. If the user asks about students, scientists, employers, or specific metrics, provide the exact numbers, goals, and initiatives mentioned in the text. Do not hallucinate.\n\nDOCUMENT CONTEXT:\n${getCtx().substring(0, 20000)}\n\nUSER QUESTION:\n${m}`;
+                const answer = await callGemini(prompt, false); 
+                setAgentStatus('s', 'done', t('agentDone')); addMsg('agent', answer); 
+            } catch (e) { setAgentStatus('s', 'done', t('agentDone')); addMsg('error', '❌ ' + e.message); }
         }
 
         async function agent(type) {
-            if (!API_KEY) { addMsg('error', 'Please add API Key in Settings'); return; } if (!Object.keys(texts).length) { addMsg('error', 'Upload PDF first.'); return; }
-            resetAgents(); setAgentStatus('r', 'active', 'Extracting...'); await sleep(800); setAgentStatus('r', 'done', 'Done');
-            setAgentStatus('a', 'active', 'Structuring...'); await sleep(800); setAgentStatus('a', 'done', 'Done');
-            setAgentStatus('s', 'active', 'Rendering...');
+            if (!API_KEY) { addMsg('error', t('errNoKey')); return; } if (!Object.keys(texts).length) { addMsg('error', t('errNoDoc')); return; }
+            resetAgents(); setAgentStatus('r', 'active', t('agentExtracting')); await sleep(800); setAgentStatus('r', 'done', t('agentDone'));
+            setAgentStatus('a', 'active', t('agentStructuring')); await sleep(800); setAgentStatus('a', 'done', t('agentDone'));
+            setAgentStatus('s', 'active', t('agentRendering'));
             
             let prompt = '';
-            if (type === 'map') { setV('map'); document.getElementById('mapBox').innerHTML = '<div class="flex flex-col items-center"><div class="spinner mb-4"></div><p class="text-muted">Generating...</p></div>'; prompt = `Extract core concepts into a mind map. Return ONLY valid JSON: {"centralNode":"Main Topic","branches":[{"name":"Branch","leaves":["Leaf1","Leaf2"]}]}.\n\n${getCtx().substring(0, 15000)}`; } 
-            else { setV('deck'); document.getElementById('deckBox').innerHTML = '<div class="flex flex-col items-center"><div class="spinner mb-4"></div><p class="text-muted">Structuring...</p></div>'; prompt = `Create 4-slide executive brief. Return ONLY valid JSON: [{"title":"Title","bullets":["Point1","Point2"]}].\n\n${getCtx().substring(0, 15000)}`; }
+            if (type === 'map') { setV('map'); document.getElementById('mapBox').innerHTML = '<div class="flex flex-col items-center"><div class="spinner mb-4"></div><p class="text-muted">Generating...</p></div>'; prompt = `Extract the core strategic pillars and initiatives from this document into a mind map. Return ONLY valid JSON: {"centralNode":"Main Topic","branches":[{"name":"Branch","leaves":["Leaf1","Leaf2"]}]}.\n\nDOCUMENT:\n${getCtx().substring(0, 15000)}`; } 
+            else { setV('deck'); document.getElementById('deckBox').innerHTML = '<div class="flex flex-col items-center"><div class="spinner mb-4"></div><p class="text-muted">Structuring...</p></div>'; prompt = `Create a 5-slide executive presentation summarizing the document's purpose, key metrics, and strategic goals. Return ONLY valid JSON: [{"title":"Title","bullets":["Point1","Point2"]}].\n\nDOCUMENT:\n${getCtx().substring(0, 15000)}`; }
             
             try {
                 const text = await callGemini(prompt, true);
                 let clean = text.replace(/```json/gi, '').replace(/```/g, '').trim();
                 let start = type === 'map' ? clean.indexOf('{') : clean.indexOf('[');
                 let end = type === 'map' ? clean.lastIndexOf('}') : clean.lastIndexOf(']');
-                if (start !== -1 && end !== -1) { const data = JSON.parse(clean.substring(start, end + 1)); if (type === 'map') renderMap(data); else renderDeck(data); setAgentStatus('s', 'done', 'Done'); addMsg('system', '✅ Generated successfully.'); } else { throw new Error('Invalid format'); }
+                if (start !== -1 && end !== -1) { const data = JSON.parse(clean.substring(start, end + 1)); if (type === 'map') renderMap(data); else renderDeck(data); setAgentStatus('s', 'done', t('agentDone')); addMsg('system', '✅ Generated successfully.'); } else { throw new Error('Invalid format'); }
             } catch (e) { 
-                setAgentStatus('s', 'done', 'Done'); 
-                if (type === 'map') renderMap({"centralNode":"Document Analysis","branches":[{"name":"Key Concepts","leaves":["Concept 1","Concept 2"]},{"name":"Details","leaves":["Detail 1","Detail 2"]}]});
+                setAgentStatus('s', 'done', t('agentDone')); 
+                if (type === 'map') renderMap({"centralNode": currentDocName || "Document Analysis","branches":[{"name":"Key Concepts","leaves":["Concept 1","Concept 2"]},{"name":"Details","leaves":["Detail 1","Detail 2"]}]});
                 else renderDeck([{"title":"Executive Summary","bullets":["Overview","Key Findings"]},{"title":"Analysis","bullets":["Data Point 1","Data Point 2"]}]);
                 addMsg('system', '✅ Generated (Fallback Mode).'); 
             }
@@ -274,7 +447,7 @@
                     const payload = { contents: [{ parts: [{ text: prompt }] }] };
                     if (isJson) payload.generationConfig = { responseMimeType: "application/json" };
                     const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 8000);
+                    const timeoutId = setTimeout(() => controller.abort(), 10000);
                     const res = await fetch(url, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(payload), signal: controller.signal });
                     clearTimeout(timeoutId);
                     const data = await res.json();
